@@ -1,6 +1,7 @@
 <x-app-layout>
     @section('content')
     <div class="max-w-5xl mx-auto py-8">
+        <x-success-modal />
         <div class="flex items-center gap-4 mb-8">
             <h1 class="text-3xl font-bold flex items-center gap-3">
                 <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -35,82 +36,6 @@
                 <button onclick="closeQrModal()" class="mt-2 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Close</button>
             </div>
         </div>
-
-        {{-- Modal for Success/Error Messages --}}
-        @if(session('success') || session('error'))
-            <div 
-                x-data="{ 
-                    open: true,
-                    init() {
-                        setTimeout(() => {
-                            this.open = false;
-                        }, 1500);
-                    }
-                }" 
-                x-show="open" 
-                x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0 translate-y-2"
-                x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-150"
-                x-transition:leave-start="opacity-100 translate-y-0"
-                x-transition:leave-end="opacity-0 translate-y-2"
-                class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30"
-                style="backdrop-filter: blur(2px);"
-            >
-                <div 
-                    @click.away="open = false"
-                    class="bg-white rounded-xl shadow-lg p-6 max-w-md w-full border border-gray-200 flex items-start gap-3 transform transition-all"
-                >
-                    <div>
-                        @if(session('success'))
-                            <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                        @else
-                            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        @endif
-                    </div>
-                    <div class="flex-1">
-                        <div class="font-semibold text-lg">
-                            @if(session('success'))
-                                @if(str_contains(session('success'), 'entry'))
-                                    Entry Recorded Successfully
-                                @elseif(str_contains(session('success'), 'exit'))
-                                    Exit Recorded Successfully
-                                @else
-                                    Success
-                                @endif
-                            @else
-                                Error
-                            @endif
-                        </div>
-                        <div class="mt-1 text-gray-700">
-                            @if(session('success'))
-                                @if(str_contains(session('success'), 'entry'))
-                                    <p class="font-medium">{{ session('success') }}</p>
-                                    <p class="text-sm text-gray-500 mt-1">The user's entry time has been recorded in the system.</p>
-                                @elseif(str_contains(session('success'), 'exit'))
-                                    <p class="font-medium">{{ session('success') }}</p>
-                                    <p class="text-sm text-gray-500 mt-1">The user's exit time has been recorded in the system.</p>
-                                @else
-                                    {{ session('success') }}
-                                @endif
-                            @else
-                                <p class="font-medium">{{ session('error') }}</p>
-                                <p class="text-sm text-gray-500 mt-1">Please try again or contact support if the issue persists.</p>
-                            @endif
-                        </div>
-                    </div>
-                    <button @click="open = false" class="ml-4 text-gray-400 hover:text-gray-700">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        @endif
 
         {{-- User Info & Mark In/Out --}}
         @if($user)

@@ -2,43 +2,31 @@
     @section('content')
     <div class="max-w-5xl mx-auto py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div x-data="{ showSuccess: false, showError: false }" x-init="
-                @if(session('success'))
-                    showSuccess = true;
-                    setTimeout(() => showSuccess = false, 2500);
-                @endif
+            <div x-data="{ showError: false }" x-init="
                 @if($errors->any())
                     showError = true;
-                    setTimeout(() => showError = false, 3500);
+                    setTimeout(() => showError = false, 2500);
                 @endif
             ">
-                <!-- Feedback Modal -->
-                <div x-show="showSuccess || showError" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30" style="display: none;">
-                    <div class="bg-white rounded-lg shadow-lg p-6 min-w-[300px] flex flex-col items-center animate-fade-in">
-                        <template x-if="showSuccess">
-                            <div class="flex flex-col items-center gap-3">
-                                <svg x-show="!$el.classList.contains('done')" class="animate-spin h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                <x-success-modal />
+                
+                <div x-show="showError" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4">
+                        <div class="flex items-center justify-center mb-4">
+                            <div class="bg-red-100 rounded-full p-2">
+                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
-                                <svg x-show="$el.classList.add('done')" class="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span class="font-semibold text-green-700 text-center">{{ session('success') }}</span>
                             </div>
-                        </template>
-                        <template x-if="showError">
-                            <div class="flex flex-col items-center gap-3">
-                                <svg class="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                                <ul class="list-disc pl-5 text-red-700 text-left">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </template>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Error!</h3>
+                            <p class="text-sm text-gray-600">
+                                @foreach($errors->all() as $error)
+                                    {{ $error }}<br>
+                                @endforeach
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -28,21 +28,7 @@
             <p class="mt-2 text-base text-gray-500 text-center">Join LibraSense and manage your library experience.</p>
         </div>
         <div class="bg-white py-8 px-6 shadow-2xl border border-gray-100 rounded-2xl relative">
-            @if (session('success'))
-                <div x-data="{ open: true }" x-show="open" x-transition class="mb-4 p-4 rounded-md bg-green-50 border border-green-200 flex items-start gap-3 animate-pulse">
-                    <svg class="h-5 w-5 text-green-400 mt-1" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16z" clip-rule="evenodd" />
-                    </svg>
-                    <div class="flex-1">
-                        <span class="text-green-800 text-sm">{{ session('success') }}</span>
-                    </div>
-                    <button @click="open = false" class="ml-4 text-gray-400 hover:text-gray-700">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            @endif
+            <x-success-modal />
             @if ($errors->any())
                 <div x-data="{ open: true }" x-show="open" x-transition class="mb-4 p-4 rounded-md bg-red-50 border border-red-200 flex items-start gap-3 animate-pulse">
                     <svg class="h-5 w-5 text-red-400 mt-1" viewBox="0 0 20 20" fill="currentColor">
