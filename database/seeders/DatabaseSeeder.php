@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             DummyUsersSeeder::class,
+            BooksTableSeeder::class,
         ]);
 
         // Wrap everything in a transaction

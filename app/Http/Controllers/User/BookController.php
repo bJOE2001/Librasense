@@ -27,7 +27,6 @@ class BookController extends Controller
         $query = $request->get('query', '');
         $books = Book::where('title', 'like', "%{$query}%")
             ->orWhere('author', 'like', "%{$query}%")
-            ->orWhere('isbn', 'like', "%{$query}%")
             ->get();
 
         return view('user.books.search', compact('books', 'query'));

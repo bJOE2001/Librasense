@@ -59,7 +59,12 @@ class LibraryVisitLogController extends Controller
     {
         $userId = $request->input('user_id');
         $name = $request->input('name');
-        $type = $request->input('type', 'student');
+        
+        // Get the user from database to get their correct type
+        $user = User::find($userId);
+        if (!$user) {
+            return back()->with('error', 'User not found.');
+        }
 
         // Prevent duplicate open visit
         $openVisit = LibraryVisit::where('user_id', $userId)
@@ -72,7 +77,7 @@ class LibraryVisitLogController extends Controller
         LibraryVisit::create([
             'user_id' => $userId,
             'name' => $name,
-            'type' => $type,
+            'type' => $user->role->name ?? 'student',
             'entry_time' => now(),
         ]);
 
@@ -154,7 +159,7 @@ class LibraryVisitLogController extends Controller
             \App\Models\LibraryVisit::create([
                 'user_id' => $user->id,
                 'name' => $user->name,
-                'type' => $user->role->name ?? 'user',
+                'type' => $user->role->name ?? 'student',
                 'entry_time' => now(),
             ]);
             $status = 'in';

@@ -10,10 +10,8 @@
                 <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                 {{ $currentInside }} currently inside
             </span>
-        </div>
-        <div class="mb-6">
-            <button id="open-qr-scanner" class="px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 font-semibold shadow flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" /></svg>
+            <button id="open-qr-scanner" class="ml-auto px-6 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 font-semibold shadow flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" /></svg>
                 Scan QR
             </button>
         </div>
@@ -154,7 +152,6 @@
                             @csrf
                             <input type="hidden" name="user_id" value="{{ $user->id }}">
                             <input type="hidden" name="name" value="{{ $user->name }}">
-                            <input type="hidden" name="type" value="student">
                             <button class="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 font-semibold shadow">Mark Entry</button>
                         </form>
                     @else
@@ -176,28 +173,43 @@
         {{-- All Users Table with Search and Filter --}}
         <div x-data="{
             search: '',
-            filter: 'all',
+            filterStatus: 'all',
+            filterType: 'all',
             get filteredUsers() {
                 let users = $refs.userRows.querySelectorAll('[data-name]');
                 users.forEach(row => {
                     let name = row.getAttribute('data-name').toLowerCase();
                     let status = row.getAttribute('data-status');
+                    let type = row.getAttribute('data-type');
                     let matchesSearch = this.search === '' || name.includes(this.search.toLowerCase());
-                    let matchesFilter = this.filter === 'all' || status === this.filter;
-                    row.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+                    let matchesStatus = this.filterStatus === 'all' || status === this.filterStatus;
+                    let matchesType = this.filterType === 'all' || type === this.filterType;
+                    row.style.display = (matchesSearch && matchesStatus && matchesType) ? '' : 'none';
                 });
             }
-        }" x-init="$watch('search', () => filteredUsers()); $watch('filter', () => filteredUsers());" class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+        }" x-init="$watch('search', () => filteredUsers()); $watch('filterStatus', () => filteredUsers()); $watch('filterType', () => filteredUsers());" class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                 <h2 class="text-xl font-semibold flex items-center gap-2">
                     <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     All Users
                 </h2>
-                <div class="flex gap-2 w-full md:w-auto relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4-4m0 0A7 7 0 105 5a7 7 0 0012 12z" /></svg>
-                    </span>
-                    <input x-model="search" type="text" placeholder="Search users..." class="flex-1 pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm" autocomplete="off">
+                <div class="flex flex-1 justify-end gap-2 items-center">
+                    <div class="relative w-64">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4-4m0 0A7 7 0 105 5a7 7 0 0012 12z" /></svg>
+                        </span>
+                        <input x-model="search" type="text" placeholder="Search users..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm" autocomplete="off">
+                    </div>
+                    <select x-model="filterStatus" class="border border-gray-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <option value="all">All Status</option>
+                        <option value="inside">Inside</option>
+                        <option value="outside">Outside</option>
+                    </select>
+                    <select x-model="filterType" class="border border-gray-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <option value="all">All Types</option>
+                        <option value="student">Student</option>
+                        <option value="non-student">Non-Student</option>
+                    </select>
                 </div>
             </div>
             <div class="overflow-x-auto" style="max-height: 500px; overflow-y: auto;">
@@ -205,7 +217,6 @@
                     <thead class="bg-gray-50 sticky top-0 z-10 shadow-sm">
                         <tr>
                             <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                             <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
@@ -214,11 +225,14 @@
                     </thead>
                     <tbody x-ref="userRows" class="bg-white divide-y divide-gray-200">
                         @forelse($users as $u)
-                            <tr class="border-b last:border-0 hover:bg-primary-50/40 transition-colors {{ $loop->even ? 'bg-gray-50' : 'bg-white' }}" data-name="{{ strtolower($u->name) }}" data-status="{{ $u->is_inside ? 'inside' : 'outside' }}">
+                            <tr class="border-b last:border-0 hover:bg-primary-50/40 transition-colors {{ $loop->even ? 'bg-gray-50' : 'bg-white' }}" data-name="{{ strtolower($u->name) }}" data-status="{{ $u->is_inside ? 'inside' : 'outside' }}" data-type="{{ $u->role && $u->role->name === 'non-student' ? 'non-student' : 'student' }}">
                                 <td class="px-3 py-2 font-medium text-gray-900">{{ $u->name }}</td>
-                                <td class="px-3 py-2 text-gray-700">{{ $u->student_id ?? 'N/A' }}</td>
                                 <td class="px-3 py-2">
-                                    <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">Student</span>
+                                    <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold 
+                                        @if($u->role && $u->role->name === 'student') bg-blue-100 text-blue-700
+                                        @else bg-green-100 text-green-700 @endif">
+                                        {{ ($u->role && $u->role->name === 'non-student') ? 'Non-Student' : 'Student' }}
+                                    </span>
                                 </td>
                                 <td class="px-3 py-2">
                                     @if($u->is_inside)
@@ -264,7 +278,7 @@
                                                 @csrf
                                                 <input type="hidden" name="user_id" value="{{ $u->id }}">
                                                 <input type="hidden" name="name" value="{{ $u->name }}">
-                                                <input type="hidden" name="type" value="student">
+                                                <input type="hidden" name="type" value="{{ $u->type }}">
                                                 <button class="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium transition-colors">In</button>
                                             </form>
                                         @else

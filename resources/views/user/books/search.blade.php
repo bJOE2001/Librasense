@@ -98,6 +98,7 @@
                                     data-category="{{ $book->category }}"
                                     data-status="{{ $book->status }}"
                                     class="hover:bg-gray-50 transition-colors"
+                                    x-data="{ showModal: false }"
                                 >
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
@@ -122,6 +123,39 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <button @click="showModal = true" class="inline-flex items-center px-3 py-1.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition">
+                                            View
+                                        </button>
+                                        <!-- Book Details Modal -->
+                                        <div x-show="showModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" @click.self="showModal = false">
+                                            <div class="bg-white rounded-xl shadow-lg max-w-md w-full p-6 relative">
+                                                <button @click="showModal = false" class="absolute top-2 right-2 text-gray-400 hover:text-gray-700">
+                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                                <div class="flex items-center gap-4 mb-4">
+                                                    <div class="flex-shrink-0 h-12 w-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                                                        <span class="text-primary-600 font-bold text-2xl">{{ substr($book->title, 0, 1) }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xl font-semibold text-gray-900">{{ $book->title }}</div>
+                                                        <div class="text-sm text-gray-500">by {{ $book->author }}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">{{ $book->category }}</span>
+                                                </div>
+                                                <div class="mb-2 text-sm text-gray-700">
+                                                    <strong>Quantity:</strong> {{ $book->quantity }}<br>
+                                                    <strong>Status:</strong> <span class="{{ $book->quantity > 0 ? 'text-green-600' : 'text-red-600' }}">{{ $book->quantity > 0 ? 'Available' : 'Unavailable' }}</span>
+                                                </div>
+                                                <div class="mb-2 text-gray-700">
+                                                    <strong>Description:</strong>
+                                                    <div class="mt-1 text-sm">{{ $book->description }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         @if($book->quantity > 0)
                                             <form method="POST" action="{{ route('user.loans.store') }}" class="inline" x-data="{ 
                                                 showDatePicker: false,

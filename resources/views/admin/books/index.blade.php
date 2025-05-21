@@ -93,7 +93,7 @@
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4-4m0 0A7 7 0 105 5a7 7 0 0012 12z" /></svg>
                             </span>
-                            <input x-model="search" type="text" placeholder="Search by title, author, or ISBN..." class="flex-1 pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm w-full" />
+                            <input x-model="search" type="text" placeholder="Search by title or author..." class="flex-1 pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 shadow-sm w-full" />
                         </div>
                         <select x-model="category" class="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                             <option value="">All Categories</option>
@@ -116,7 +116,6 @@
                             <tr>
                                 <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                                 <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
-                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ISBN</th>
                                 <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
                                 <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
                                 <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Availability</th>
@@ -132,7 +131,6 @@
                                     <td class="px-3 py-2">
                                         <span class="inline-block bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">{{ $book->author }}</span>
                                     </td>
-                                    <td class="px-3 py-2 text-gray-600">{{ $book->isbn }}</td>
                                     <td class="px-3 py-2">
                                         <span class="inline-block bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-semibold">{{ $book->category }}</span>
                                     </td>
@@ -206,13 +204,6 @@
                     <x-input-error :messages="$errors->get('author')" class="mt-2" />
                 </div>
 
-                <!-- ISBN -->
-                <div>
-                    <x-input-label for="isbn" value="ISBN" />
-                    <x-text-input id="isbn" name="isbn" type="text" class="mt-1 block w-full" required />
-                    <x-input-error :messages="$errors->get('isbn')" class="mt-2" />
-                </div>
-
                 <!-- Category -->
                 <div>
                     <x-input-label for="category" value="Category" />
@@ -225,13 +216,6 @@
                         <option value="biography">Biography</option>
                     </select>
                     <x-input-error :messages="$errors->get('category')" class="mt-2" />
-                </div>
-
-                <!-- Location -->
-                <div>
-                    <x-input-label for="location" value="Location" />
-                    <x-text-input id="location" name="location" type="text" class="mt-1 block w-full" required placeholder="e.g., Shelf A-1, Row 2" />
-                    <x-input-error :messages="$errors->get('location')" class="mt-2" />
                 </div>
 
                 <!-- Quantity -->
@@ -291,13 +275,6 @@
                         <x-input-error :messages="$errors->get('author')" class="mt-2" />
                     </div>
 
-                    <!-- ISBN -->
-                    <div>
-                        <x-input-label for="isbn_{{ $book->id }}" value="ISBN" />
-                        <x-text-input id="isbn_{{ $book->id }}" name="isbn" type="text" class="mt-1 block w-full" :value="old('isbn', $book->isbn)" required />
-                        <x-input-error :messages="$errors->get('isbn')" class="mt-2" />
-                    </div>
-
                     <!-- Category -->
                     <div>
                         <x-input-label for="category_{{ $book->id }}" value="Category" />
@@ -310,13 +287,6 @@
                             <option value="biography" {{ $book->category === 'biography' ? 'selected' : '' }}>Biography</option>
                         </select>
                         <x-input-error :messages="$errors->get('category')" class="mt-2" />
-                    </div>
-
-                    <!-- Location -->
-                    <div>
-                        <x-input-label for="location_{{ $book->id }}" value="Location" />
-                        <x-text-input id="location_{{ $book->id }}" name="location" type="text" class="mt-1 block w-full" :value="old('location', $book->location)" required placeholder="e.g., Shelf A-1, Row 2" />
-                        <x-input-error :messages="$errors->get('location')" class="mt-2" />
                     </div>
 
                     <!-- Quantity -->

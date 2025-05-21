@@ -32,8 +32,7 @@ class BookController extends Controller
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('author', 'like', "%{$search}%")
-                  ->orWhere('isbn', 'like', "%{$search}%");
+                  ->orWhere('author', 'like', "%{$search}%");
             });
         }
 
@@ -62,13 +61,11 @@ class BookController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
-            'isbn' => 'required|string|unique:books,isbn|max:13',
             'description' => 'required|string',
             'publication_year' => 'nullable|integer|min:1000|max:' . (date('Y') + 1),
             'publisher' => 'nullable|string|max:255',
             'quantity' => 'required|integer|min:0',
             'category' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
@@ -107,13 +104,11 @@ class BookController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
-            'isbn' => 'required|string|max:13|unique:books,isbn,' . $book->id,
             'description' => 'required|string',
             'publication_year' => 'nullable|integer|min:1000|max:' . (date('Y') + 1),
             'publisher' => 'nullable|string|max:255',
             'quantity' => 'required|integer|min:0',
             'category' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
