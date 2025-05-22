@@ -1,17 +1,16 @@
 <!-- Sidebar Navigation -->
-<div class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg hidden lg:block">
+<div class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg hidden lg:flex flex-col">
     <!-- Logo & Brand -->
     <div class="flex items-center justify-center h-20 border-b border-gray-200">
         <img src="{{ asset('images/logo.png') }}" alt="LibraSense Logo" class="h-14 w-auto mr-3">
         <span class="text-lg font-bold tracking-wide" style="color: #2a2b2a;">LibraSense</span>
     </div>
 
-    <!-- Navigation Links -->
-    <nav class="mt-6 px-4 space-y-2">
+    <!-- Navigation Links (make this scrollable if needed) -->
+    <nav class="flex-1 overflow-y-auto mt-6 px-4 space-y-2">
         <x-side-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" icon="dashboard">
             {{ __('Dashboard') }}
         </x-side-link>
-
         <!-- Books Section -->
         <div class="pt-4">
             <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -21,17 +20,14 @@
                 <x-side-link :href="route('admin.books.index')" :active="request()->routeIs('admin.books.*')" icon="book">
                     {{ __('Books') }}
                 </x-side-link>
-
                 <x-side-link :href="route('admin.loans.index')" :active="request()->routeIs('admin.loans.*')" icon="loans">
                     {{ __('Loans') }}
                 </x-side-link>
-
                 <x-side-link :href="route('admin.library-visits.log')" :active="request()->routeIs('admin.library-visits.log')" icon="clock">
                     {{ __('User Presence') }}
                 </x-side-link>
             </div>
         </div>
-
         <!-- Analytics Section -->
         <div class="pt-4">
             <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -57,8 +53,8 @@
         </div>
     </nav>
 
-    <!-- User Profile Section -->
-    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+    <!-- User Profile Section (always at the bottom) -->
+    <div class="p-4 border-t border-gray-200">
         <div class="flex items-center mb-3">
             <div class="flex-shrink-0">
                 <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
