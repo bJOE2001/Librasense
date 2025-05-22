@@ -12,9 +12,9 @@ class DummyFeedbackSeeder extends Seeder
 {
     protected $miningService;
 
-    public function __construct(FeedbackMiningService $miningService)
+    public function __construct()
     {
-        $this->miningService = $miningService;
+        $this->miningService = new FeedbackMiningService();
     }
 
     public function run(): void

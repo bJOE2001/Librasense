@@ -11,11 +11,12 @@ class LibraryVisit extends Model
 
     protected $fillable = [
         'user_id',
-        'name',
-        'type',
+        'visitor_name',
+        'visitor_type',
         'entry_time',
         'exit_time',
-        'duration_minutes'
+        'duration_minutes',
+        'qr_code'
     ];
 
     protected $casts = [

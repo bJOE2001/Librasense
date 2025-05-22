@@ -7,6 +7,7 @@ use App\Models\Book;
 use App\Models\Loan;
 use App\Models\User;
 use App\Models\LibraryVisit;
+use App\Models\Feedback;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -37,8 +38,18 @@ class AnalyticsController extends Controller
 
         // Get user statistics - using created_at instead of last_login_at
         $userStats = [
-            'active_users' => User::where('created_at', '>=', Carbon::now()->subDays(30))->count(),
+            'active_users' => User::where(function($query) {
+                $query->where('created_at', '>=', Carbon::now()->subDays(30))
+                    ->orWhereHas('loans', function($q) {
+                        $q->where('created_at', '>=', Carbon::now()->subDays(30));
+                    })
+                    ->orWhereHas('libraryVisits', function($q) {
+                        $q->where('created_at', '>=', Carbon::now()->subDays(30));
+                    });
+            })->count(),
             'new_users' => User::whereMonth('created_at', Carbon::now()->month)->count(),
+            'active_loans' => Loan::whereNull('return_date')->count(),
+            'recent_visits' => LibraryVisit::where('created_at', '>=', Carbon::now()->subDays(30))->count(),
         ];
 
         // Get visitor trends (last 7 days)
@@ -67,6 +78,9 @@ class AnalyticsController extends Controller
             ->take(5)
             ->get();
 
+        // Get user distribution by school
+        $schoolStats = $this->getSchoolStats();
+
         return view('admin.analytics', compact(
             'visitorStats',
             'loanStats',
@@ -77,7 +91,8 @@ class AnalyticsController extends Controller
             'categoryStats',
             'userActivity',
             'recentVisits',
-            'popularBooks'
+            'popularBooks',
+            'schoolStats'
         ));
     }
 
@@ -139,21 +154,52 @@ class AnalyticsController extends Controller
 
     private function getUserActivity()
     {
-        $dates = collect(range(6, 0))->map(function ($day) {
-            return Carbon::now()->subDays($day)->format('Y-m-d');
-        });
+        $days = 7;
+        $dates = collect();
+        $activity = collect();
 
-        // Count users who have loans or visits in the last 7 days
-        $activity = DB::table('users')
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as count'))
-            ->whereIn(DB::raw('DATE(created_at)'), $dates)
-            ->groupBy('date')
-            ->get()
-            ->keyBy('date');
+        // Generate dates for the last 7 days
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i)->format('Y-m-d');
+            $dates->push($date);
+            
+            // Count activities for each day
+            $dailyActivity = [
+                'loans' => Loan::whereDate('created_at', $date)->count(),
+                'visits' => LibraryVisit::whereDate('created_at', $date)->count(),
+                'feedback' => Feedback::whereDate('created_at', $date)->count(),
+                'logins' => DB::table('sessions')
+                    ->whereRaw('to_timestamp(last_activity)::date = ?', [$date])
+                    ->count()
+            ];
+            
+            $activity->push($dailyActivity);
+        }
 
         return [
-            'labels' => $dates->map(fn($date) => Carbon::parse($date)->format('M d'))->toArray(),
-            'data' => $dates->map(fn($date) => $activity[$date]->count ?? 0)->toArray(),
+            'labels' => $dates->map(function($date) {
+                return Carbon::parse($date)->format('M d');
+            })->toArray(),
+            'data' => [
+                'loans' => $activity->pluck('loans')->toArray(),
+                'visits' => $activity->pluck('visits')->toArray(),
+                'feedback' => $activity->pluck('feedback')->toArray(),
+                'logins' => $activity->pluck('logins')->toArray()
+            ]
+        ];
+    }
+
+    private function getSchoolStats()
+    {
+        $schools = User::select('school', DB::raw('COUNT(*) as count'))
+            ->whereNotNull('school')
+            ->groupBy('school')
+            ->orderByDesc('count')
+            ->get();
+
+        return [
+            'labels' => $schools->pluck('school')->toArray(),
+            'data' => $schools->pluck('count')->toArray(),
         ];
     }
 

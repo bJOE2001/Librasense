@@ -76,6 +76,11 @@ class User extends Authenticatable
         return $this->hasMany(LibraryVisit::class);
     }
 
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
+
     public function getCurrentVisitAttribute()
     {
         return $this->libraryVisits()->whereNull('exit_time')->latest('entry_time')->first();

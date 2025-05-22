@@ -77,11 +77,11 @@
 
             <!-- Charts Section -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <!-- Visitor Trends -->
+                <!-- School Distribution Pie Chart -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Visitor Trends</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">User Distribution by School</h3>
                     <div class="relative" style="height: 300px;">
-                        <canvas id="visitorTrendsChart"></canvas>
+                        <canvas id="schoolStatsChart"></canvas>
                     </div>
                 </div>
 
@@ -213,22 +213,28 @@
             }
         };
 
-        // Visitor Trends Chart
-        const visitorTrendsCtx = document.getElementById('visitorTrendsChart').getContext('2d');
-        new Chart(visitorTrendsCtx, {
-            type: 'line',
+        // School Distribution Pie Chart
+        const schoolStatsCtx = document.getElementById('schoolStatsChart').getContext('2d');
+        new Chart(schoolStatsCtx, {
+            type: 'doughnut',
             data: {
-                labels: {!! json_encode($visitorTrends['labels'] ?? []) !!},
+                labels: {!! json_encode($schoolStats['labels'] ?? []) !!},
                 datasets: [{
-                    label: 'Daily Visitors',
-                    data: {!! json_encode($visitorTrends['data'] ?? []) !!},
-                    borderColor: '#4F46E5',
-                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                    tension: 0.4,
-                    fill: true
+                    data: {!! json_encode($schoolStats['data'] ?? []) !!},
+                    backgroundColor: [
+                        '#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6366F1', '#F472B6', '#34D399', '#F87171', '#FBBF24'
+                    ]
                 }]
             },
-            options: commonOptions
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
         });
 
         // Circulation Trends Chart
@@ -281,16 +287,58 @@
             type: 'line',
             data: {
                 labels: {!! json_encode($userActivity['labels'] ?? []) !!},
-                datasets: [{
-                    label: 'Active Users',
-                    data: {!! json_encode($userActivity['data'] ?? []) !!},
-                    borderColor: '#8B5CF6',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
+                datasets: [
+                    {
+                        label: 'Loans',
+                        data: {!! json_encode($userActivity['data']['loans'] ?? []) !!},
+                        borderColor: '#4F46E5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Visits',
+                        data: {!! json_encode($userActivity['data']['visits'] ?? []) !!},
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Feedback',
+                        data: {!! json_encode($userActivity['data']['feedback'] ?? []) !!},
+                        borderColor: '#F59E0B',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Logins',
+                        data: {!! json_encode($userActivity['data']['logins'] ?? []) !!},
+                        borderColor: '#8B5CF6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
             },
-            options: commonOptions
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
         });
     </script>
     @endpush

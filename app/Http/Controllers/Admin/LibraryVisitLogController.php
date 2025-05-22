@@ -76,8 +76,8 @@ class LibraryVisitLogController extends Controller
 
         LibraryVisit::create([
             'user_id' => $userId,
-            'name' => $name,
-            'type' => $user->role->name ?? 'student',
+            'visitor_name' => $name,
+            'visitor_type' => $user->role->name ?? 'student',
             'entry_time' => now(),
         ]);
 
@@ -158,8 +158,8 @@ class LibraryVisitLogController extends Controller
             // Mark in
             \App\Models\LibraryVisit::create([
                 'user_id' => $user->id,
-                'name' => $user->name,
-                'type' => $user->role->name ?? 'student',
+                'visitor_name' => $user->name,
+                'visitor_type' => $user->role->name ?? 'student',
                 'entry_time' => now(),
             ]);
             $status = 'in';

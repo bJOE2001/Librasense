@@ -68,25 +68,33 @@
                 <!-- Rating Distribution Chart -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Rating Distribution</h3>
-                    <canvas id="ratingChart" height="300"></canvas>
+                    <div class="relative" style="height: 300px;">
+                        <canvas id="ratingChart"></canvas>
+                    </div>
                 </div>
 
                 <!-- Sentiment Analysis Chart -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Sentiment Analysis</h3>
-                    <canvas id="sentimentChart" height="300"></canvas>
+                    <div class="relative" style="height: 300px;">
+                        <canvas id="sentimentChart"></canvas>
+                    </div>
                 </div>
 
                 <!-- Category Distribution Chart -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Feedback Categories</h3>
-                    <canvas id="categoryChart" height="300"></canvas>
+                    <div class="relative" style="height: 300px;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
                 </div>
 
                 <!-- Recent Trends Chart -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Trends</h3>
-                    <canvas id="trendsChart" height="300"></canvas>
+                    <div class="relative" style="height: 300px;">
+                        <canvas id="trendsChart"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -131,8 +139,27 @@
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Common chart options for consistency
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        };
+
         // Rating Distribution Chart
-        new Chart(document.getElementById('ratingChart'), {
+        new Chart(document.getElementById('ratingChart').getContext('2d'), {
             type: 'bar',
             data: {
                 labels: {!! json_encode($ratingDistribution->pluck('rating')) !!},
@@ -140,124 +167,76 @@
                     label: 'Number of Ratings',
                     data: {!! json_encode($ratingDistribution->pluck('count')) !!},
                     backgroundColor: [
-                        'rgba(239, 68, 68, 0.2)',
-                        'rgba(239, 68, 68, 0.2)',
-                        'rgba(234, 179, 8, 0.2)',
-                        'rgba(34, 197, 94, 0.2)',
-                        'rgba(34, 197, 94, 0.2)'
+                        '#EF4444', '#EF4444', '#F59E0B', '#10B981', '#10B981'
                     ],
-                    borderColor: [
-                        'rgb(239, 68, 68)',
-                        'rgb(239, 68, 68)',
-                        'rgb(234, 179, 8)',
-                        'rgb(34, 197, 94)',
-                        'rgb(34, 197, 94)'
-                    ],
-                    borderWidth: 1
+                    borderRadius: 4
                 }]
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                }
-            }
+            options: commonOptions
         });
 
         // Sentiment Analysis Chart
-        new Chart(document.getElementById('sentimentChart'), {
+        new Chart(document.getElementById('sentimentChart').getContext('2d'), {
             type: 'doughnut',
             data: {
                 labels: {!! json_encode($sentimentStats->pluck('sentiment')) !!},
                 datasets: [{
                     data: {!! json_encode($sentimentStats->pluck('count')) !!},
                     backgroundColor: [
-                        'rgba(34, 197, 94, 0.2)',
-                        'rgba(234, 179, 8, 0.2)',
-                        'rgba(239, 68, 68, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgb(34, 197, 94)',
-                        'rgb(234, 179, 8)',
-                        'rgb(239, 68, 68)'
-                    ],
-                    borderWidth: 1
+                        '#10B981', '#F59E0B', '#EF4444'
+                    ]
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'right'
                     }
                 }
             }
         });
 
         // Category Distribution Chart
-        new Chart(document.getElementById('categoryChart'), {
-            type: 'pie',
+        new Chart(document.getElementById('categoryChart').getContext('2d'), {
+            type: 'doughnut',
             data: {
                 labels: {!! json_encode($categoryStats->pluck('category')) !!},
                 datasets: [{
                     data: {!! json_encode($categoryStats->pluck('count')) !!},
                     backgroundColor: [
-                        'rgba(59, 130, 246, 0.2)',
-                        'rgba(16, 185, 129, 0.2)',
-                        'rgba(245, 158, 11, 0.2)',
-                        'rgba(139, 92, 246, 0.2)',
-                        'rgba(236, 72, 153, 0.2)',
-                        'rgba(14, 165, 233, 0.2)',
-                        'rgba(168, 85, 247, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgb(59, 130, 246)',
-                        'rgb(16, 185, 129)',
-                        'rgb(245, 158, 11)',
-                        'rgb(139, 92, 246)',
-                        'rgb(236, 72, 153)',
-                        'rgb(14, 165, 233)',
-                        'rgb(168, 85, 247)'
-                    ],
-                    borderWidth: 1
+                        '#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6366F1', '#F472B6', '#34D399', '#F87171', '#FBBF24'
+                    ]
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'right'
                     }
                 }
             }
         });
 
         // Recent Trends Chart
-        new Chart(document.getElementById('trendsChart'), {
+        new Chart(document.getElementById('trendsChart').getContext('2d'), {
             type: 'line',
             data: {
                 labels: {!! json_encode($recentTrends->pluck('date')) !!},
                 datasets: [{
                     label: 'Number of Feedback',
                     data: {!! json_encode($recentTrends->pluck('count')) !!},
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderColor: '#4F46E5',
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
                     tension: 0.4,
                     fill: true
                 }, {
                     label: 'Average Rating',
                     data: {!! json_encode($recentTrends->pluck('avg_rating')) !!},
-                    borderColor: 'rgb(16, 185, 129)',
+                    borderColor: '#10B981',
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
                     tension: 0.4,
                     fill: true,
@@ -266,6 +245,12 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                },
                 interaction: {
                     mode: 'index',
                     intersect: false,
@@ -277,7 +262,7 @@
                         position: 'left',
                         beginAtZero: true,
                         ticks: {
-                            stepSize: 1
+                            precision: 0
                         }
                     },
                     y1: {

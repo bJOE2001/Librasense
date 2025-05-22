@@ -121,7 +121,6 @@
                                     data-status="{{ $loan->return_date ? 'returned' : ($loan->status === 'reserved' ? 'reserved' : ($loan->is_overdue ? 'overdue' : 'active')) }}">
                                     <td class="px-3 py-2 font-medium text-gray-900">
                                         {{ $loan->book->title ?? 'N/A' }}
-                                        <div class="text-xs text-gray-500">ISBN: {{ $loan->book->isbn ?? 'N/A' }}</div>
                                     </td>
                                     <td class="px-3 py-2">
                                         <span class="inline-block bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">{{ $loan->user->name ?? 'N/A' }}</span>

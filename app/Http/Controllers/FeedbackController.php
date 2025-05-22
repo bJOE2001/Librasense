@@ -51,6 +51,22 @@ class FeedbackController extends Controller
         
         $feedback->save();
 
+        // Enhanced anomaly detection: repeated negative feedbacks
+        if ($feedback->user_id && $feedback->rating <= 2) {
+            $recentNegativeCount = Feedback::where('user_id', $feedback->user_id)
+                ->where('rating', '<=', 2)
+                ->where('message', $feedback->message)
+                ->where('created_at', '>=', now()->subMinutes(10))
+                ->count();
+            if ($recentNegativeCount >= 3) {
+                Feedback::where('user_id', $feedback->user_id)
+                    ->where('rating', '<=', 2)
+                    ->where('message', $feedback->message)
+                    ->where('created_at', '>=', now()->subMinutes(10))
+                    ->update(['is_anomaly' => true]);
+            }
+        }
+
         return redirect()->route('user.feedback')
             ->with('success', 'Thank you for your feedback! We will review it soon.');
     }

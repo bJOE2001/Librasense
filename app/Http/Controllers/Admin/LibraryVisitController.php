@@ -28,8 +28,8 @@ class LibraryVisitController extends Controller
         // Create new visit with entry time
         $visit = LibraryVisit::create([
             'user_id' => $request->user_id,
-            'name' => $request->name,
-            'type' => $request->type,
+            'visitor_name' => $request->name,
+            'visitor_type' => $request->type,
             'entry_time' => now(),
         ]);
 
