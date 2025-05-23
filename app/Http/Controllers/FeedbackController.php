@@ -94,6 +94,81 @@ class FeedbackController extends Controller
             'anomaly_count' => Feedback::where('is_anomaly', true)->count(),
         ];
 
+        // Combine clustering (by topic) and phrase extraction (frequent patterns)
+        $suggestions = [];
+        $topicCounts = [];
+        $topicFeedbackMap = [];
+        $miningService = app(\App\Services\FeedbackMiningService::class);
+        $recentNegativeFeedback = $latestFeedback->filter(function($feedback) {
+            return ($feedback->sentiment ?? null) === 'negative' || $feedback->rating <= 2;
+        });
+        foreach ($recentNegativeFeedback as $feedback) {
+            $topics = is_array($feedback->topics) ? $feedback->topics : json_decode($feedback->topics, true);
+            if ($topics) {
+                foreach ($topics as $topic) {
+                    if (!isset($topicCounts[$topic])) $topicCounts[$topic] = 0;
+                    $topicCounts[$topic]++;
+                    if (!isset($topicFeedbackMap[$topic])) $topicFeedbackMap[$topic] = [];
+                    $topicFeedbackMap[$topic][] = $feedback->message;
+                }
+            }
+        }
+        // Map topics to actionable suggestions
+        $topicToSuggestion = [
+            'staff' => 'Consider staff training or customer service workshops.',
+            'library_services' => 'Review and improve library service processes.',
+            'noise' => 'Review noise control policies in study areas.',
+            'website' => 'Investigate and improve website/app usability.',
+            'wifi' => 'Check and upgrade WiFi/internet connectivity.',
+            'facilities' => 'Inspect and maintain library facilities regularly.',
+            'cleanliness' => 'Increase cleaning frequency and monitor hygiene.',
+            'book_collection' => 'Expand and update the book collection.',
+            'technology' => 'Upgrade or maintain library technology and devices.',
+            'accessibility' => 'Improve accessibility features for all users.',
+            'events' => 'Organize more engaging and relevant events.',
+            'hours' => 'Consider extending or adjusting library hours.',
+            'general' => 'Review general feedback for miscellaneous improvements.',
+        ];
+        arsort($topicCounts);
+        // For each top topic, extract most common phrase (if any)
+        foreach ($topicCounts as $topic => $count) {
+            $suggestionText = $topicToSuggestion[$topic] ?? ('Review feedback related to ' . $topic);
+            $clusterFeedback = collect($topicFeedbackMap[$topic] ?? []);
+            $clusterPatterns = $miningService->findFrequentPatterns($clusterFeedback);
+            $topPhrase = null;
+            if (!empty($clusterPatterns)) {
+                $topPhrase = array_key_first($clusterPatterns);
+            }
+            $suggestions[] = [
+                'text' => $suggestionText,
+                'count' => $count,
+                'phrase' => $topPhrase
+            ];
+        }
+        // Also extract overall frequent patterns as emerging issues
+        $allNegativeFeedback = \App\Models\Feedback::where('sentiment', 'negative')
+            ->orWhere('rating', '<=', 2)
+            ->latest()
+            ->take(20)
+            ->get();
+        $frequentPatterns = $miningService->findFrequentPatterns($allNegativeFeedback);
+        foreach ($frequentPatterns as $phrase => $count) {
+            if ($count > 1) {
+                $suggestions[] = [
+                    'text' => 'Emerging issue',
+                    'count' => $count,
+                    'phrase' => $phrase
+                ];
+            }
+        }
+        if (empty($suggestions)) {
+            $suggestions[] = [
+                'text' => 'Keep up the good work! No urgent suggestions from recent feedback.',
+                'count' => null,
+                'phrase' => null
+            ];
+        }
+
         return view('admin.feedback.analytics', compact(
             'categoryStats',
             'ratingDistribution',
@@ -103,7 +178,8 @@ class FeedbackController extends Controller
             'sentimentStats',
             'topicDistribution',
             'anomalyStats',
-            'userSegmentStats'
+            'userSegmentStats',
+            'suggestions'
         ));
     }
 

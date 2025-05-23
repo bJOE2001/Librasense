@@ -98,38 +98,67 @@
                 </div>
             </div>
 
-            <!-- Latest Feedback -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                    </svg>
-                    Latest Feedback
-                </h3>
-                <div class="space-y-4">
-                    @foreach($latestFeedback as $feedback)
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
-                                    <span class="text-sm font-medium text-yellow-600">{{ $feedback->user && $feedback->user->name ? substr($feedback->user->name, 0, 1) : '?' }}</span>
+            <!-- Latest Feedback and Suggestions -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Latest Feedback -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                        </svg>
+                        Latest Feedback
+                    </h3>
+                    <div class="space-y-4">
+                        @foreach($latestFeedback as $feedback)
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
+                                        <span class="text-sm font-medium text-yellow-600">{{ $feedback->user && $feedback->user->name ? substr($feedback->user->name, 0, 1) : '?' }}</span>
+                                    </div>
+                                    <span class="font-medium text-gray-800">{{ $feedback->user->name ?? 'Anonymous' }}</span>
                                 </div>
-                                <span class="font-medium text-gray-800">{{ $feedback->user->name ?? 'Anonymous' }}</span>
+                                <div class="flex-1 mx-4">
+                                    <div class="font-medium text-gray-900">{{ $feedback->subject }}</div>
+                                    <div class="text-gray-600 text-sm">{{ Str::limit($feedback->message, 60) }}</div>
+                                </div>
+                                <div class="flex flex-col items-end">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $feedback->rating >= 4 ? 'bg-green-100 text-green-800' : ($feedback->rating <= 2 ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 17.75l-6.172 3.245 1.179-6.873-5-4.873 6.9-1.002L12 2.5l3.093 6.747 6.9 1.002-5 4.873 1.179 6.873z" />
+                                        </svg>
+                                        {{ $feedback->rating }}/5
+                                    </span>
+                                    <span class="text-xs text-gray-500 mt-1">{{ $feedback->created_at->diffForHumans() }}</span>
+                                </div>
                             </div>
-                            <div class="flex-1 mx-4">
-                                <div class="font-medium text-gray-900">{{ $feedback->subject }}</div>
-                                <div class="text-gray-600 text-sm">{{ Str::limit($feedback->message, 60) }}</div>
-                            </div>
-                            <div class="flex flex-col items-end">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $feedback->rating >= 4 ? 'bg-green-100 text-green-800' : ($feedback->rating <= 2 ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 17.75l-6.172 3.245 1.179-6.873-5-4.873 6.9-1.002L12 2.5l3.093 6.747 6.9 1.002-5 4.873 1.179 6.873z" />
-                                    </svg>
-                                    {{ $feedback->rating }}/5
-                                </span>
-                                <span class="text-xs text-gray-500 mt-1">{{ $feedback->created_at->diffForHumans() }}</span>
-                            </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
+                </div>
+                <!-- Suggestions Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-1.79 8-4V6c0-2.21-3.582-4-8-4S4 3.79 4 6v10c0 2.21 3.582 4 8 4z" />
+                        </svg>
+                        Suggestions
+                    </h3>
+                    <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                        @foreach($suggestions as $suggestion)
+                            <li class="flex flex-col mb-2">
+                                <div class="flex items-center justify-between">
+                                    <span>{{ $suggestion['text'] }}</span>
+                                    @if(!is_null($suggestion['count']))
+                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                            {{ $suggestion['count'] }} feedback{{ $suggestion['count'] > 1 ? 's' : '' }}
+                                        </span>
+                                    @endif
+                                </div>
+                                @if(!empty($suggestion['phrase']))
+                                    <span class="ml-1 mt-1 text-xs text-gray-500 italic">Most common phrase: "{{ $suggestion['phrase'] }}"</span>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>

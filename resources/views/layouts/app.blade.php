@@ -26,7 +26,9 @@
                     @include('layouts.user-navigation')
                 @endif
             @else
-                @include('layouts.navigation')
+                <script>
+                    window.location.href = "{{ route('login') }}";
+                </script>
             @endauth
 
             <!-- Page Heading -->

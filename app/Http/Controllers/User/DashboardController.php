@@ -46,11 +46,15 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Get book recommendations based on user's loan history
+        $recommended_books = $this->getBookRecommendations($user);
+
         // Stats for user dashboard
         $stats = [
             'total_loans' => Loan::where('user_id', $user->id)->count(),
             'active_loans' => $current_loans->count(),
             'overdue_loans' => $overdue_loans->count(),
+            'reserved_loans' => Loan::where('user_id', $user->id)->where('status', 'reserved')->count(),
             'past_loans' => Loan::where('user_id', $user->id)->whereNotNull('return_date')->count(),
             'feedback_count' => \App\Models\Feedback::where('user_id', $user->id)->count(),
         ];
@@ -61,7 +65,50 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        return view('user.dashboard', compact('current_loans', 'overdue_loans', 'past_loans', 'stats', 'recent_feedback'));
+        return view('user.dashboard', compact('current_loans', 'overdue_loans', 'past_loans', 'stats', 'recent_feedback', 'recommended_books'));
+    }
+
+    /**
+     * Get book recommendations based on user's loan history
+     */
+    private function getBookRecommendations($user)
+    {
+        // Get user's most borrowed categories from past loans
+        $user_categories = Loan::where('user_id', $user->id)
+            ->whereNotNull('return_date')
+            ->with('book')
+            ->get()
+            ->pluck('book.category')
+            ->countBy()
+            ->sortDesc()
+            ->keys()
+            ->take(3);
+
+        // Get books from user's favorite categories that they haven't borrowed yet
+        $recommended_books = Book::whereIn('category', $user_categories)
+            ->where('is_available', true)
+            ->whereDoesntHave('loans', function($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->inRandomOrder()
+            ->take(5)
+            ->get();
+
+        // If we don't have enough recommendations, add some popular books from other categories
+        if ($recommended_books->count() < 5) {
+            $additional_books = Book::whereNotIn('category', $user_categories)
+                ->where('is_available', true)
+                ->whereDoesntHave('loans', function($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->inRandomOrder()
+                ->take(5 - $recommended_books->count())
+                ->get();
+
+            $recommended_books = $recommended_books->concat($additional_books);
+        }
+
+        return $recommended_books;
     }
 
     public function searchBooks(Request $request)

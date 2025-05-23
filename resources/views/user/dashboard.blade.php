@@ -38,7 +38,7 @@
             </div>
 
             <!-- Stats Overview -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-all duration-200 transform hover:-translate-y-1">
                     <div class="flex items-center justify-between">
                         <div>
@@ -48,6 +48,20 @@
                         <div class="p-3 bg-primary-50 rounded-lg">
                             <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <!-- Reserved Loans Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-all duration-200 transform hover:-translate-y-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Reserved Loans</p>
+                            <p class="text-3xl font-bold text-blue-600 mt-2">{{ $stats['reserved_loans'] }}</p>
+                        </div>
+                        <div class="p-3 bg-blue-50 rounded-lg">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5v14l7-7 7 7V5a2 2 0 00-2-2H7a2 2 0 00-2 2z" />
                             </svg>
                         </div>
                     </div>
@@ -167,8 +181,59 @@
                 </div>
             </div>
 
-            <!-- Recent Feedback -->
-            <div class="mt-8">
+            <!-- Recommendations & Feedback Side by Side -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                <!-- Book Recommendations -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                </svg>
+                                Recommended for You
+                            </h3>
+                        </div>
+                        <div class="space-y-4">
+                            @forelse($recommended_books as $book)
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="flex-shrink-0">
+                                            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                                <span class="text-indigo-600 font-semibold">{{ substr($book->title, 0, 1) }}</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900">{{ $book->title }}</p>
+                                            <p class="text-sm text-gray-500">by {{ $book->author }}</p>
+                                            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-full {{ $book->category === 'Fiction' ? 'bg-purple-100 text-purple-800' : ($book->category === 'Non-Fiction' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800') }}">
+                                                {{ $book->category }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('user.book-search') }}?search={{ urlencode($book->title) }}" class="text-primary-600 hover:text-primary-700 font-medium text-sm">
+                                        View Details
+                                    </a>
+                                </div>
+                            @empty
+                                <div class="text-center py-8">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                    <h3 class="mt-2 text-sm font-medium text-gray-900">No recommendations yet</h3>
+                                    <p class="mt-1 text-sm text-gray-500">Start borrowing books to get personalized recommendations!</p>
+                                    <a href="{{ route('user.book-search') }}" class="mt-4 inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                        Browse Books
+                                    </a>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+                <!-- Recent Feedback -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
