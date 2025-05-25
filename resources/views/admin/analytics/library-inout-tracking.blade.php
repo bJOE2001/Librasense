@@ -1,5 +1,7 @@
+@section('title', 'Librasense - Library In/Out Tracking')
 <x-app-layout>
-@section('content')
+    <title>Librasense - Library In/Out Tracking</title>
+    @section('content')
 <div class="py-8">
     <h1 class="text-3xl font-bold mb-6">Library In/Out Tracking</h1>
     <!-- Comparison Filter Bar -->
@@ -119,7 +121,7 @@ new Chart(document.getElementById('stayDurationHistogram').getContext('2d'), {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Number of Students'
+                    text: 'Number of Visitors'
                 },
                 ticks: {
                     stepSize: 25,
@@ -133,7 +135,7 @@ new Chart(document.getElementById('stayDurationHistogram').getContext('2d'), {
             x: {
                 title: {
                     display: true,
-                    text: 'Duration of Time'
+                    text: 'Stay Duration'
                 }
             }
         }

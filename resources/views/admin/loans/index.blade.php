@@ -1,4 +1,6 @@
+@section('title', 'Librasense - Loan Management')
 <x-app-layout>
+    <title>Librasense - Loan Management</title>
     @section('content')
     <div class="max-w-5xl mx-auto py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -33,7 +35,9 @@
             <!-- Page Header -->
             <div class="flex items-center gap-4 mb-8">
                 <h2 class="text-3xl font-bold flex items-center gap-3">
-                    <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4a2 2 0 00-2-2H6a2 2 0 00-2 2v16a2 2 0 002 2h4a2 2 0 002-2v-2m0-12h4a2 2 0 012 2v16a2 2 0 01-2 2h-4" />
+                    </svg>
                     Loans
                 </h2>
                 <div class="flex gap-2 ml-auto">
@@ -82,7 +86,9 @@
             }" x-init="$watch('search', () => updateRows()); $watch('status', () => updateRows());">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                     <h2 class="text-xl font-semibold flex items-center gap-2">
-                        <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4a2 2 0 00-2-2H6a2 2 0 00-2 2v16a2 2 0 002 2h4a2 2 0 002-2v-2m0-12h4a2 2 0 012 2v16a2 2 0 01-2 2h-4" />
+                        </svg>
                         All Loans
                     </h2>
                     <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
@@ -120,7 +126,20 @@
                                     data-user="{{ strtolower($loan->user->name ?? '') }}"
                                     data-status="{{ $loan->return_date ? 'returned' : ($loan->status === 'reserved' ? 'reserved' : ($loan->is_overdue ? 'overdue' : 'active')) }}">
                                     <td class="px-3 py-2 font-medium text-gray-900">
-                                        {{ $loan->book->title ?? 'N/A' }}
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 aspect-[2/3] rounded bg-gray-100 flex items-center justify-center overflow-hidden">
+                                                @if(isset($loan->book->cover_image) && $loan->book->cover_image)
+                                                    @if(Str::startsWith($loan->book->cover_image, ['http://', 'https://']))
+                                                        <img src="{{ $loan->book->cover_image }}" alt="{{ $loan->book->title }} cover" class="object-cover h-full w-full">
+                                                    @else
+                                                        <img src="{{ asset('storage/' . $loan->book->cover_image) }}" alt="{{ $loan->book->title }} cover" class="object-cover h-full w-full">
+                                                    @endif
+                                                @else
+                                                    <span class="text-gray-400 font-bold text-lg">{{ substr($loan->book->title ?? 'N', 0, 1) }}</span>
+                                                @endif
+                                            </div>
+                                            <span>{{ $loan->book->title ?? 'N/A' }}</span>
+                                        </div>
                                     </td>
                                     <td class="px-3 py-2">
                                         <span class="inline-block bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">{{ $loan->user->name ?? 'N/A' }}</span>

@@ -1,3 +1,4 @@
+@section('title', 'Librasense - User Settings')
 <x-app-layout>
     <div class="max-w-2xl mx-auto py-12">
         <h1 class="text-3xl font-bold mb-6">User Settings</h1>

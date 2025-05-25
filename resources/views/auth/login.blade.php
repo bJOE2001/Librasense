@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login - LibraSense</title>
+    <title>Librasense - Login</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -23,7 +23,7 @@
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-white py-12 px-4 sm:px-6 lg:px-8 font-sans antialiased">
     <div class="max-w-md w-full space-y-8 fade-in">
         <div class="flex flex-col items-center">
-            <img class="h-16 w-auto mb-4 animate-bounce" src="{{ asset('images/logo.png') }}" alt="LibraSense Logo">
+            <img class="h-32 min-w-[8rem] max-h-none w-auto p-2 mb-4 animate-bounce" src="{{ asset('images/logo.png') }}" alt="LibraSense Logo">
             <h2 class="text-3xl font-extrabold text-gray-900 text-center">Sign in to your account</h2>
             <p class="mt-2 text-base text-gray-500 text-center">Welcome back! Please sign in to continue.</p>
         </div>

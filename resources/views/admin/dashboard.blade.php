@@ -1,4 +1,6 @@
+@section('title', 'Librasense - Admin Dashboard')
 <x-app-layout>
+    <title>Librasense - Admin Dashboard</title>
     @section('content')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

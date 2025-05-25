@@ -19,7 +19,8 @@ class Book extends Model
         'quantity',
         'location',
         'is_available',
-        'category'
+        'category',
+        'cover_image'
     ];
 
     protected $casts = [

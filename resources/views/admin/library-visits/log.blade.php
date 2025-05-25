@@ -1,4 +1,6 @@
+@section('title', 'Librasense - User Presence Log')
 <x-app-layout>
+    <title>Librasense - Library Visits Log</title>
     @section('content')
     <div class="max-w-5xl mx-auto py-8">
         <x-success-modal />
@@ -151,7 +153,17 @@
                     <tbody x-ref="userRows" class="bg-white divide-y divide-gray-200">
                         @forelse($users as $u)
                             <tr class="border-b last:border-0 hover:bg-primary-50/40 transition-colors {{ $loop->even ? 'bg-gray-50' : 'bg-white' }}" data-name="{{ strtolower($u->name) }}" data-status="{{ $u->is_inside ? 'inside' : 'outside' }}" data-type="{{ $u->role && $u->role->name === 'non-student' ? 'non-student' : 'student' }}">
-                                <td class="px-3 py-2 font-medium text-gray-900">{{ $u->name }}</td>
+                                <td class="px-3 py-2 font-medium text-gray-900">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-8 w-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                            <span class="text-sm font-medium text-gray-600">{{ $u->name ? substr($u->name, 0, 1) : '?' }}</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <div class="font-medium text-gray-900">{{ $u->name }}</div>
+                                            <div class="text-gray-500 text-xs">{{ $u->email ?? '' }}</div>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td class="px-3 py-2">
                                     <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold 
                                         @if($u->role && $u->role->name === 'student') bg-blue-100 text-blue-700

@@ -2,8 +2,7 @@
 <div class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg hidden lg:block">
     <!-- Logo & Brand -->
     <div class="flex items-center justify-center h-20 border-b border-gray-200">
-        <img src="{{ asset('images/logo.png') }}" alt="LibraSense Logo" class="h-14 w-auto mr-3">
-        <span class="text-lg font-bold tracking-wide" style="color: #2a2b2a;">LibraSense</span>
+        <img src="{{ asset('images/logo.png') }}" alt="Librasense Logo" class="h-32 min-w-[8rem] w-auto mr-3">
     </div>
 
     <!-- Navigation Links -->
@@ -71,8 +70,7 @@
     <div class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
         <div class="flex items-center justify-between h-16 px-4">
             <div class="flex items-center">
-                <img src="{{ asset('images/logo.png') }}" alt="LibraSense Logo" class="h-8 w-auto mr-2">
-                <span class="text-lg font-bold tracking-wide" style="color: #2a2b2a;">LibraSense</span>
+                <img src="{{ asset('images/logo.png') }}" alt="Librasense Logo" class="h-24 min-w-[6rem] w-auto mr-2">
             </div>
             <button @click="open = !open" class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
                 <span class="sr-only">Open main menu</span>
@@ -172,4 +170,6 @@
             @yield('content')
         </div>
     </div>
-</div> 
+</div>
+
+<title>Librasense - User Dashboard</title> 

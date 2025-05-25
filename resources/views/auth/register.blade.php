@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Register - LibraSense</title>
+    <title>Librasense - Register</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -23,9 +23,9 @@
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-white py-12 px-4 sm:px-6 lg:px-8 font-sans antialiased">
     <div class="max-w-7xl w-full space-y-8 fade-in">
         <div class="flex flex-col items-center">
-            <img class="h-16 w-auto mb-4 animate-bounce" src="{{ asset('images/logo.png') }}" alt="LibraSense Logo">
+            <img class="h-32 min-w-[8rem] max-h-none w-auto p-2 mb-4 animate-bounce" src="{{ asset('images/logo.png') }}" alt="Librasense Logo">
             <h2 class="text-3xl font-extrabold text-gray-900 text-center">Create your account</h2>
-            <p class="mt-2 text-base text-gray-500 text-center">Join LibraSense and manage your library experience.</p>
+            <p class="mt-2 text-base text-gray-500 text-center">Join Librasense and manage your library experience.</p>
         </div>
         <div class="bg-white py-8 px-6 shadow-2xl border border-gray-100 rounded-2xl relative">
             <x-success-modal />
@@ -248,7 +248,7 @@
                 </p>
             </div>
             <div class="mt-8 flex flex-col items-center justify-center gap-2">
-                <span class="text-gray-400 text-xs">&copy; {{ date('Y') }} LibraSense</span>
+                <span class="text-gray-400 text-xs">&copy; {{ date('Y') }} Librasense</span>
                 <div class="flex gap-4 mt-2">
                     <a href="#" class="text-xs text-gray-400 hover:text-primary-600 transition">Terms of Service</a>
                     <a href="#" class="text-xs text-gray-400 hover:text-primary-600 transition">Privacy Policy</a>

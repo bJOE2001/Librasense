@@ -1,3 +1,4 @@
+@section('title', 'Librasense - User Dashboard')
 <x-app-layout>
     @section('content')
     <div class="py-12">
@@ -199,14 +200,22 @@
                                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                                     <div class="flex items-center space-x-4">
                                         <div class="flex-shrink-0">
-                                            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                                <span class="text-indigo-600 font-semibold">{{ substr($book->title, 0, 1) }}</span>
+                                            <div class="w-12 aspect-[2/3] rounded-lg bg-indigo-100 flex items-center justify-center overflow-hidden">
+                                                @if($book->cover_image)
+                                                    @if(Str::startsWith($book->cover_image, ['http://', 'https://']))
+                                                        <img src="{{ $book->cover_image }}" alt="{{ $book->title }} cover" class="object-cover h-full w-full">
+                                                    @else
+                                                        <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }} cover" class="object-cover h-full w-full">
+                                                    @endif
+                                                @else
+                                                    <span class="text-indigo-600 font-semibold text-2xl">{{ substr($book->title, 0, 1) }}</span>
+                                                @endif
                                             </div>
                                         </div>
                                         <div>
                                             <p class="font-medium text-gray-900">{{ $book->title }}</p>
                                             <p class="text-sm text-gray-500">by {{ $book->author }}</p>
-                                            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-full {{ $book->category === 'Fiction' ? 'bg-purple-100 text-purple-800' : ($book->category === 'Non-Fiction' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800') }}">
+                                            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">
                                                 {{ $book->category }}
                                             </span>
                                         </div>

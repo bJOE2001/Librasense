@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <title>LibraSense - Modern Library Management System</title>
+        <title>Librasense - Modern Library Management System</title>
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -37,9 +37,8 @@
                 <div class="flex justify-between h-16 items-center">
                     <div class="flex items-center gap-4">
                         <a href="{{ route('home') }}" class="flex items-center group">
-                            <img src="{{ asset('images/logo.png') }}" alt="LibraSense Logo" class="block h-9 w-auto transition-transform group-hover:scale-105" />
-                            <span class="ml-2 text-2xl font-extrabold text-gray-900 tracking-tight group-hover:text-primary-600 transition">LibraSense</span>
-                            </a>
+                            <img src="{{ asset('images/logo.png') }}" alt="LibraSense Logo" class="h-32 min-w-[8rem] max-h-none w-auto p-2" />
+                        </a>
                         <div class="hidden sm:flex sm:space-x-8 ml-8">
                             <a href="#about" class="text-gray-700 font-medium hover:text-primary-600 transition">About</a>
                         </div>
@@ -185,8 +184,7 @@
             <div class="max-w-7xl mx-auto py-10 px-4 overflow-hidden sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
                     <div class="flex items-center gap-3 justify-center md:justify-start">
-                        <img src="{{ asset('images/logo.png') }}" alt="LibraSense Logo" class="h-8 w-auto" />
-                        <span class="text-lg font-bold tracking-wide text-gray-900">LibraSense</span>
+                        <img src="{{ asset('images/logo.png') }}" alt="LibraSense Logo" class="h-32 min-w-[8rem] max-h-none w-auto p-2" />
                     </div>
                     <nav class="flex flex-wrap justify-center gap-6" aria-label="Footer">
                         <a href="#about" class="text-base text-gray-500 hover:text-primary-600 transition">About</a>

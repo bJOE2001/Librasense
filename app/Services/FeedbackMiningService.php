@@ -186,11 +186,95 @@ class FeedbackMiningService
         $patterns = [];
         $messages = $feedback->pluck('message')->toArray();
         
+        // Common English stop words to exclude
+        $stopWords = [
+            'a', 'an', 'the', 'and', 'or', 'but', 'if', 'because', 'as', 'what',
+            'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your',
+            'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she',
+            'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their',
+            'theirs', 'themselves', 'this', 'that', 'these', 'those', 'am', 'is', 'are',
+            'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do',
+            'does', 'did', 'doing', 'would', 'should', 'could', 'ought', 'i\'m', 'you\'re',
+            'he\'s', 'she\'s', 'it\'s', 'we\'re', 'they\'re', 'i\'ve', 'you\'ve', 'we\'ve',
+            'they\'ve', 'i\'d', 'you\'d', 'he\'d', 'she\'d', 'we\'d', 'they\'d', 'i\'ll',
+            'you\'ll', 'he\'ll', 'she\'ll', 'we\'ll', 'they\'ll', 'isn\'t', 'aren\'t',
+            'wasn\'t', 'weren\'t', 'hasn\'t', 'haven\'t', 'hadn\'t', 'doesn\'t', 'don\'t',
+            'didn\'t', 'won\'t', 'wouldn\'t', 'shan\'t', 'shouldn\'t', 'can\'t', 'cannot',
+            'couldn\'t', 'mustn\'t', 'let\'s', 'that\'s', 'who\'s', 'what\'s', 'here\'s',
+            'there\'s', 'when\'s', 'where\'s', 'why\'s', 'how\'s', 'to', 'from', 'up',
+            'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then',
+            'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both',
+            'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not',
+            'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will',
+            'just', 'don', 'should', 'now', 'very', 'well', 'also', 'much', 'many', 'lot',
+            'good', 'bad', 'great', 'nice', 'better', 'best', 'worse', 'worst', 'like',
+            'want', 'need', 'use', 'used', 'using', 'get', 'got', 'getting', 'make',
+            'makes', 'made', 'making', 'come', 'comes', 'came', 'coming', 'take', 'takes',
+            'took', 'taking', 'see', 'sees', 'saw', 'seeing', 'know', 'knows', 'knew',
+            'knowing', 'think', 'thinks', 'thought', 'thinking', 'feel', 'feels', 'felt',
+            'feeling', 'go', 'goes', 'went', 'going', 'say', 'says', 'said', 'saying',
+            'tell', 'tells', 'told', 'telling', 'ask', 'asks', 'asked', 'asking', 'work',
+            'works', 'worked', 'working', 'seem', 'seems', 'seemed', 'seeming', 'try',
+            'tries', 'tried', 'trying', 'leave', 'leaves', 'left', 'leaving', 'call',
+            'calls', 'called', 'calling', 'help', 'helps', 'helped', 'helping', 'look',
+            'looks', 'looked', 'looking', 'find', 'finds', 'found', 'finding', 'give',
+            'gives', 'gave', 'giving', 'keep', 'keeps', 'kept', 'keeping', 'let', 'lets',
+            'let', 'letting', 'put', 'puts', 'put', 'putting', 'mean', 'means', 'meant',
+            'meaning', 'become', 'becomes', 'became', 'becoming', 'show', 'shows', 'showed',
+            'showing', 'move', 'moves', 'moved', 'moving', 'live', 'lives', 'lived',
+            'living', 'stand', 'stands', 'stood', 'standing', 'turn', 'turns', 'turned',
+            'turning', 'start', 'starts', 'started', 'starting', 'stop', 'stops', 'stopped',
+            'stopping', 'hold', 'holds', 'held', 'holding', 'bring', 'brings', 'brought',
+            'bringing', 'begin', 'begins', 'began', 'beginning', 'write', 'writes', 'wrote',
+            'writing', 'read', 'reads', 'read', 'reading', 'spend', 'spends', 'spent',
+            'spending', 'grow', 'grows', 'grew', 'growing', 'lose', 'loses', 'lost',
+            'losing', 'add', 'adds', 'added', 'adding', 'change', 'changes', 'changed',
+            'changing', 'fall', 'falls', 'fell', 'falling', 'stay', 'stays', 'stayed',
+            'staying', 'speak', 'speaks', 'spoke', 'speaking', 'pay', 'pays', 'paid',
+            'paying', 'send', 'sends', 'sent', 'sending', 'build', 'builds', 'built',
+            'building', 'understand', 'understands', 'understood', 'understanding', 'draw',
+            'draws', 'drew', 'drawing', 'break', 'breaks', 'broke', 'breaking', 'spend',
+            'spends', 'spent', 'spending', 'cut', 'cuts', 'cut', 'cutting', 'rise',
+            'rises', 'rose', 'rising', 'drive', 'drives', 'drove', 'driving', 'buy',
+            'buys', 'bought', 'buying', 'wear', 'wears', 'wore', 'wearing', 'choose',
+            'chooses', 'chose', 'choosing', 'seek', 'seeks', 'sought', 'seeking', 'throw',
+            'throws', 'threw', 'throwing', 'catch', 'catches', 'caught', 'catching',
+            'deal', 'deals', 'dealt', 'dealing', 'win', 'wins', 'won', 'winning',
+            'force', 'forces', 'forced', 'forcing', 'hit', 'hits', 'hit', 'hitting',
+            'eat', 'eats', 'ate', 'eating', 'meet', 'meets', 'met', 'meeting', 'sit',
+            'sits', 'sat', 'sitting', 'stand', 'stands', 'stood', 'standing', 'lie',
+            'lies', 'lay', 'lying', 'lead', 'leads', 'led', 'leading', 'lose', 'loses',
+            'lost', 'losing', 'save', 'saves', 'saved', 'saving', 'get', 'gets', 'got',
+            'getting', 'set', 'sets', 'set', 'setting', 'run', 'runs', 'ran', 'running',
+            'walk', 'walks', 'walked', 'walking', 'jump', 'jumps', 'jumped', 'jumping',
+            'fly', 'flies', 'flew', 'flying', 'ride', 'rides', 'rode', 'riding', 'swim',
+            'swims', 'swam', 'swimming', 'climb', 'climbs', 'climbed', 'climbing', 'fall',
+            'falls', 'fell', 'falling', 'throw', 'throws', 'threw', 'throwing', 'catch',
+            'catches', 'caught', 'catching', 'hold', 'holds', 'held', 'holding', 'carry',
+            'carries', 'carried', 'carrying', 'push', 'pushes', 'pushed', 'pushing',
+            'pull', 'pulls', 'pulled', 'pulling', 'lift', 'lifts', 'lifted', 'lifting',
+            'drop', 'drops', 'dropped', 'dropping', 'throw', 'throws', 'threw', 'throwing',
+            'catch', 'catches', 'caught', 'catching', 'hold', 'holds', 'held', 'holding',
+            'carry', 'carries', 'carried', 'carrying', 'push', 'pushes', 'pushed', 'pushing',
+            'pull', 'pulls', 'pulled', 'pulling', 'lift', 'lifts', 'lifted', 'lifting',
+            'drop', 'drops', 'dropped', 'dropping', 'throw', 'throws', 'threw', 'throwing',
+            'catch', 'catches', 'caught', 'catching', 'hold', 'holds', 'held', 'holding',
+            'carry', 'carries', 'carried', 'carrying', 'push', 'pushes', 'pushed', 'pushing',
+            'pull', 'pulls', 'pulled', 'pulling', 'lift', 'lifts', 'lifted', 'lifting',
+            'drop', 'drops', 'dropped', 'dropping'
+        ];
+        
         // Simple pattern finding based on common phrases
         foreach ($messages as $message) {
             $words = explode(' ', strtolower($message));
-            for ($i = 0; $i < count($words) - 1; $i++) {
-                $phrase = $words[$i] . ' ' . $words[$i + 1];
+            $filteredWords = array_filter($words, function($word) use ($stopWords) {
+                return !in_array($word, $stopWords) && strlen($word) > 2;
+            });
+            
+            $filteredWords = array_values($filteredWords); // Re-index array
+            
+            for ($i = 0; $i < count($filteredWords) - 1; $i++) {
+                $phrase = $filteredWords[$i] . ' ' . $filteredWords[$i + 1];
                 if (!isset($patterns[$phrase])) {
                     $patterns[$phrase] = 0;
                 }

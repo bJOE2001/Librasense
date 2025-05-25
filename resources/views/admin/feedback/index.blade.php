@@ -1,4 +1,5 @@
 @php use Illuminate\Support\Str; @endphp
+@section('title', 'Librasense - Feedback Management')
 <x-app-layout>
     @section('content')
     <div class="w-full mx-auto py-8">
@@ -6,7 +7,9 @@
             <!-- Page Header -->
             <div class="flex items-center gap-4 mb-8">
                 <h2 class="text-3xl font-bold flex items-center gap-3">
-                    <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8a5 5 0 00-10 0v4a5 5 0 0010 0V8zm-5 8v.01" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H7a2 2 0 01-2-2V10a2 2 0 012-2h2m6 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m6 0h-6" />
+                    </svg>
                     Feedback List
                 </h2>
                 <a href="{{ route('admin.feedback.analytics') }}" class="ml-auto px-6 py-3 text-lg font-medium text-white bg-primary-600 rounded-xl hover:bg-primary-700 shadow-sm flex items-center gap-2">
@@ -43,7 +46,9 @@
             }" x-effect="filteredRows()">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                     <h2 class="text-xl font-semibold flex items-center gap-2">
-                        <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8a5 5 0 00-10 0v4a5 5 0 0010 0V8zm-5 8v.01" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H7a2 2 0 01-2-2V10a2 2 0 012-2h2m6 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m6 0h-6" />
+                        </svg>
                         All Feedback
                     </h2>
                     <div class="flex flex-wrap gap-2 w-full md:w-auto">

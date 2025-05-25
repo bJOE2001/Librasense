@@ -1,3 +1,4 @@
+@section('title', 'Librasense - Feedback')
 <x-app-layout>
     @section('content')
     <div class="py-12">

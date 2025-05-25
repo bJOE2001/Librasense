@@ -1,4 +1,6 @@
+@section('title', 'Librasense - Book Management')
 <x-app-layout>
+    <title>Librasense - Book Management</title>
     @section('content')
     <div class="max-w-5xl mx-auto py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -85,11 +87,9 @@
                         </div>
                         <select x-model="category" class="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                             <option value="">All Categories</option>
-                            <option value="fiction">Fiction</option>
-                            <option value="non-fiction">Non-Fiction</option>
-                            <option value="science">Science</option>
-                            <option value="history">History</option>
-                            <option value="biography">Biography</option>
+                            @foreach($books->pluck('category')->unique()->sort() as $cat)
+                                <option value="{{ $cat }}">{{ $cat }}</option>
+                            @endforeach
                         </select>
                         <select x-model="availability" class="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                             <option value="">All Availability</option>
@@ -113,8 +113,21 @@
                         <tbody x-ref="bookRows" class="bg-white divide-y divide-gray-200">
                             @forelse ($books as $book)
                                 <tr class="hover:bg-primary-50/40 transition-colors {{ $loop->even ? 'bg-gray-50' : 'bg-white' }}" data-title="{{ strtolower($book->title) }}" data-author="{{ strtolower($book->author) }}" data-category="{{ $book->category }}" data-available="{{ $book->is_available ? '1' : '0' }}">
-                                    <td class="px-3 py-2 font-medium text-gray-900">{{ $book->title }}
-                                        <div class="text-xs text-gray-500">Added {{ $book->created_at->diffForHumans() }}</div>
+                                    <td class="px-3 py-2">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 aspect-[2/3] rounded bg-gray-100 flex items-center justify-center overflow-hidden">
+                                                @if($book->cover_image)
+                                                    @if(Str::startsWith($book->cover_image, ['http://', 'https://']))
+                                                        <img src="{{ $book->cover_image }}" alt="{{ $book->title }} cover" class="object-cover h-full w-full">
+                                                    @else
+                                                        <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }} cover" class="object-cover h-full w-full">
+                                                    @endif
+                                                @else
+                                                    <span class="text-gray-400 font-bold text-lg">{{ substr($book->title, 0, 1) }}</span>
+                                                @endif
+                                            </div>
+                                            <span>{{ $book->title }}</span>
+                                        </div>
                                     </td>
                                     <td class="px-3 py-2">
                                         <span class="inline-block bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">{{ $book->author }}</span>
@@ -197,13 +210,18 @@
                     <x-input-label for="category" value="Category" />
                     <select id="category" name="category" class="mt-1 block w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm" required>
                         <option value="">Select a category</option>
-                        <option value="fiction">Fiction</option>
-                        <option value="non-fiction">Non-Fiction</option>
-                        <option value="science">Science</option>
-                        <option value="history">History</option>
-                        <option value="biography">Biography</option>
+                        @foreach($books->pluck('category')->unique()->sort() as $cat)
+                            <option value="{{ $cat }}">{{ $cat }}</option>
+                        @endforeach
                     </select>
                     <x-input-error :messages="$errors->get('category')" class="mt-2" />
+                </div>
+
+                <!-- Cover Image -->
+                <div>
+                    <x-input-label for="cover_image" value="Book Cover (optional)" />
+                    <input id="cover_image" name="cover_image" type="file" accept="image/*" class="mt-1 block w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm" />
+                    <x-input-error :messages="$errors->get('cover_image')" class="mt-2" />
                 </div>
 
                 <!-- Quantity -->
@@ -268,13 +286,28 @@
                         <x-input-label for="category_{{ $book->id }}" value="Category" />
                         <select id="category_{{ $book->id }}" name="category" class="mt-1 block w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm" required>
                             <option value="">Select a category</option>
-                            <option value="fiction" {{ $book->category === 'fiction' ? 'selected' : '' }}>Fiction</option>
-                            <option value="non-fiction" {{ $book->category === 'non-fiction' ? 'selected' : '' }}>Non-Fiction</option>
-                            <option value="science" {{ $book->category === 'science' ? 'selected' : '' }}>Science</option>
-                            <option value="history" {{ $book->category === 'history' ? 'selected' : '' }}>History</option>
-                            <option value="biography" {{ $book->category === 'biography' ? 'selected' : '' }}>Biography</option>
+                            @foreach($books->pluck('category')->unique()->sort() as $cat)
+                                <option value="{{ $cat }}" @if(old('category', $book->category) == $cat) selected @endif>{{ $cat }}</option>
+                            @endforeach
                         </select>
                         <x-input-error :messages="$errors->get('category')" class="mt-2" />
+                    </div>
+
+                    <!-- Cover Image -->
+                    <div>
+                        <x-input-label for="cover_image_{{ $book->id }}" value="Book Cover (optional)" />
+                        <input id="cover_image_{{ $book->id }}" name="cover_image" type="file" accept="image/*" class="mt-1 block w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm" />
+                        <x-input-error :messages="$errors->get('cover_image')" class="mt-2" />
+                        @if($book->cover_image)
+                            <div class="mt-2">
+                                <span class="text-xs text-gray-500">Current cover:</span><br>
+                                @if(Str::startsWith($book->cover_image, ['http://', 'https://']))
+                                    <img src="{{ $book->cover_image }}" alt="Current cover" class="h-24 rounded shadow border mt-1">
+                                @else
+                                    <img src="{{ asset('storage/' . $book->cover_image) }}" alt="Current cover" class="h-24 rounded shadow border mt-1">
+                                @endif
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Quantity -->

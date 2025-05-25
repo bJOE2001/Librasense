@@ -1,5 +1,7 @@
 @php use Illuminate\Support\Str; @endphp
+@section('title', 'Librasense - Feedback Analytics')
 <x-app-layout>
+    <title>Librasense - Feedback Analytics</title>
     @section('content')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -142,23 +144,63 @@
                         </svg>
                         Suggestions
                     </h3>
-                    <ul class="list-disc pl-5 space-y-2 text-gray-700">
-                        @foreach($suggestions as $suggestion)
-                            <li class="flex flex-col mb-2">
-                                <div class="flex items-center justify-between">
-                                    <span>{{ $suggestion['text'] }}</span>
-                                    @if(!is_null($suggestion['count']))
-                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                                            {{ $suggestion['count'] }} feedback{{ $suggestion['count'] > 1 ? 's' : '' }}
-                                        </span>
+
+                    {{-- Actionable Suggestions --}}
+                    <div class="mb-6">
+                        <div class="font-semibold text-blue-700 flex items-center mb-2">
+                            <svg class="w-4 h-4 mr-1 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Actionable Suggestions
+                        </div>
+                        <div style="max-height: 200px; overflow-y: auto;" class="pr-2">
+                            <ul class="space-y-2">
+                                @foreach($suggestions as $suggestion)
+                                    @if($suggestion['text'] !== 'Emerging issue')
+                                        <li class="flex flex-col bg-blue-50 rounded p-2">
+                                            <div class="flex items-center">
+                                                <span class="font-medium">{{ $suggestion['text'] }}</span>
+                                                @if(!is_null($suggestion['count']))
+                                                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                                        {{ $suggestion['count'] }} feedback{{ $suggestion['count'] > 1 ? 's' : '' }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            @if(!empty($suggestion['phrase']))
+                                                <span class="ml-1 mt-1 text-xs text-gray-500 italic">Most common phrase: "{{ $suggestion['phrase'] }}"</span>
+                                            @endif
+                                        </li>
                                     @endif
-                                </div>
-                                @if(!empty($suggestion['phrase']))
-                                    <span class="ml-1 mt-1 text-xs text-gray-500 italic">Most common phrase: "{{ $suggestion['phrase'] }}"</span>
-                                @endif
-                            </li>
-                        @endforeach
-                    </ul>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+
+                    {{-- Emerging Issues --}}
+                    <div>
+                        <div class="font-semibold text-orange-700 flex items-center mb-2">
+                            <svg class="w-4 h-4 mr-1 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01" />
+                            </svg>
+                            Emerging Issues
+                        </div>
+                        <div style="max-height: 250px; overflow-y: auto;" class="pr-2">
+                            <ul class="space-y-2">
+                                @foreach($suggestions as $suggestion)
+                                    @if($suggestion['text'] === 'Emerging issue')
+                                        <li class="flex flex-col bg-orange-50 rounded p-2">
+                                            <div class="flex items-center">
+                                                <span class="font-medium">Phrase: <span class="text-orange-700">"{{ $suggestion['phrase'] }}"</span></span>
+                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-800">
+                                                    {{ $suggestion['count'] }} feedback{{ $suggestion['count'] > 1 ? 's' : '' }}
+                                                </span>
+                                            </div>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

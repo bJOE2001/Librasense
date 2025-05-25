@@ -1,5 +1,7 @@
+@section('title', 'Librasense - Export Reports')
 <x-app-layout>
-@section('content')
+    <title>Librasense - Export Reports</title>
+    @section('content')
 <div class="py-8">
     <h1 class="text-3xl font-bold mb-6">Export Reports</h1>
     <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 max-w-xl mx-auto">

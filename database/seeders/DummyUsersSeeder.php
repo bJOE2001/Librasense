@@ -38,99 +38,52 @@ class DummyUsersSeeder extends Seeder
         $studentRole = \App\Models\Role::where('name', 'student')->first();
         $nonStudentRole = \App\Models\Role::where('name', 'non-student')->first();
 
-        // Create 10 dummy users with static data
-        $users = [
-            [
-                'name' => 'John Smith',
-                'email' => 'john.smith@librasense.com',
-                'role' => 'student',
-                'school' => $schools[0],
-                'phone' => '+639123456789',
-                'address' => '123 Main St, Tagum City',
-            ],
-            [
-                'name' => 'Mary Johnson',
-                'email' => 'mary.johnson@librasense.com',
-                'role' => 'student',
-                'school' => $schools[1],
-                'phone' => '+639234567890',
-                'address' => '456 Oak St, Tagum City',
-            ],
-            [
-                'name' => 'James Williams',
-                'email' => 'james.williams@librasense.com',
-                'role' => 'non-student',
-                'school' => null,
-                'phone' => '+639345678901',
-                'address' => '789 Pine St, Tagum City',
-            ],
-            [
-                'name' => 'Patricia Brown',
-                'email' => 'patricia.brown@librasense.com',
-                'role' => 'student',
-                'school' => $schools[2],
-                'phone' => '+639456789012',
-                'address' => '321 Elm St, Tagum City',
-            ],
-            [
-                'name' => 'Robert Jones',
-                'email' => 'robert.jones@librasense.com',
-                'role' => 'non-student',
-                'school' => null,
-                'phone' => '+639567890123',
-                'address' => '654 Maple St, Tagum City',
-            ],
-            [
-                'name' => 'Jennifer Garcia',
-                'email' => 'jennifer.garcia@librasense.com',
-                'role' => 'student',
-                'school' => $schools[3],
-                'phone' => '+639678901234',
-                'address' => '987 Cedar St, Tagum City',
-            ],
-            [
-                'name' => 'Michael Miller',
-                'email' => 'michael.miller@librasense.com',
-                'role' => 'non-student',
-                'school' => null,
-                'phone' => '+639789012345',
-                'address' => '147 Birch St, Tagum City',
-            ],
-            [
-                'name' => 'Linda Davis',
-                'email' => 'linda.davis@librasense.com',
-                'role' => 'student',
-                'school' => $schools[4],
-                'phone' => '+639890123456',
-                'address' => '258 Walnut St, Tagum City',
-            ],
-            [
-                'name' => 'William Rodriguez',
-                'email' => 'william.rodriguez@librasense.com',
-                'role' => 'non-student',
-                'school' => null,
-                'phone' => '+639901234567',
-                'address' => '369 Cherry St, Tagum City',
-            ],
-            [
-                'name' => 'Elizabeth Martinez',
-                'email' => 'elizabeth.martinez@librasense.com',
-                'role' => 'student',
-                'school' => $schools[5],
-                'phone' => '+639012345678',
-                'address' => '741 Spruce St, Tagum City',
-            ],
+        // List of real names
+        $firstNames = [
+            'Maria', 'John', 'James', 'Mary', 'Robert', 'Patricia', 'Michael', 'Jennifer', 'William', 'Linda',
+            'David', 'Elizabeth', 'Richard', 'Barbara', 'Joseph', 'Susan', 'Thomas', 'Jessica', 'Charles', 'Sarah',
+            'Christopher', 'Karen', 'Daniel', 'Nancy', 'Matthew', 'Lisa', 'Anthony', 'Margaret', 'Mark', 'Betty',
+            'Donald', 'Sandra', 'Steven', 'Ashley', 'Paul', 'Kimberly', 'Andrew', 'Emily', 'Joshua', 'Donna',
+            'Kenneth', 'Michelle', 'Kevin', 'Dorothy', 'Brian', 'Carol', 'George', 'Amanda', 'Edward', 'Melissa',
+            'Ronald', 'Deborah', 'Timothy', 'Stephanie', 'Jason', 'Rebecca', 'Ryan', 'Sharon', 'Jacob', 'Laura',
+            'Gary', 'Cynthia', 'Nicholas', 'Kathleen', 'Eric', 'Amy', 'Jonathan', 'Shirley', 'Stephen', 'Angela',
+            'Larry', 'Helen', 'Justin', 'Anna', 'Scott', 'Brenda', 'Brandon', 'Pamela', 'Benjamin', 'Nicole',
+            'Samuel', 'Emma', 'Gregory', 'Samantha', 'Frank', 'Katherine', 'Alexander', 'Christine', 'Patrick', 'Debra',
+            'Raymond', 'Rachel', 'Jack', 'Catherine', 'Dennis', 'Carolyn', 'Jerry', 'Janet', 'Tyler', 'Ruth'
         ];
 
-        foreach ($users as $userData) {
+        $lastNames = [
+            'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
+            'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
+            'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson',
+            'Walker', 'Young', 'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores',
+            'Green', 'Adams', 'Nelson', 'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts',
+            'Gomez', 'Phillips', 'Evans', 'Turner', 'Diaz', 'Parker', 'Cruz', 'Edwards', 'Collins', 'Reyes',
+            'Stewart', 'Morris', 'Morales', 'Murphy', 'Cook', 'Rogers', 'Cooper', 'Peterson', 'Bailey', 'Reed',
+            'Kelly', 'Howard', 'Ramos', 'Kim', 'Cox', 'Ward', 'Torres', 'Peterson', 'Gray', 'Ramirez',
+            'James', 'Watson', 'Brooks', 'Sanders', 'Price', 'Bennett', 'Wood', 'Barnes', 'Ross', 'Henderson'
+        ];
+
+        // Create 100 dummy users
+        for ($i = 0; $i < 100; $i++) {
+            $firstName = $firstNames[array_rand($firstNames)];
+            $lastName = $lastNames[array_rand($lastNames)];
+            $name = $firstName . ' ' . $lastName;
+            $email = strtolower($firstName . '.' . $lastName . '@librasense.com');
+            $isStudent = rand(0, 1) === 1;
+            $school = $isStudent ? $schools[array_rand($schools)] : null;
+            $phone = '+63' . rand(9000000000, 9999999999);
+            $streetNames = ['Main', 'Oak', 'Pine', 'Elm', 'Maple', 'Cedar', 'Birch', 'Walnut', 'Cherry', 'Spruce'];
+            $address = rand(1, 999) . ' ' . $streetNames[array_rand($streetNames)] . ' St, Tagum City';
+
             User::create([
-                'name' => $userData['name'],
-                'email' => $userData['email'],
+                'name' => $name,
+                'email' => $email,
                 'password' => Hash::make('password123'),
-                'role_id' => $userData['role'] === 'student' ? $studentRole->id : $nonStudentRole->id,
-                'school' => $userData['school'],
-                'phone' => $userData['phone'],
-                'address' => $userData['address'],
+                'role_id' => $isStudent ? $studentRole->id : $nonStudentRole->id,
+                'school' => $school,
+                'phone' => $phone,
+                'address' => $address,
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),

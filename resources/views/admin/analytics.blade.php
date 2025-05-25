@@ -1,4 +1,6 @@
+@section('title', 'Librasense - Analytics')
 <x-app-layout>
+    <title>Librasense - Analytics</title>
     @section('content')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -163,12 +165,20 @@
                             <a href="{{ route('admin.books.index') }}" class="text-sm text-primary-600 hover:text-primary-700">View all</a>
                         </div>
                         <div class="space-y-4">
-                            @forelse($popularBooks ?? [] as $book)
+                            @forelse(($popularBooks ?? collect())->filter(fn($book) => $book->loans_count > 0) as $book)
                                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                     <div class="flex items-center space-x-4">
                                         <div class="flex-shrink-0">
-                                            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
-                                                <span class="text-yellow-600 font-semibold">{{ substr($book->title, 0, 1) }}</span>
+                                            <div class="w-10 aspect-[2/3] rounded bg-yellow-100 flex items-center justify-center overflow-hidden">
+                                                @if($book->cover_image)
+                                                    @if(Str::startsWith($book->cover_image, ['http://', 'https://']))
+                                                        <img src="{{ $book->cover_image }}" alt="{{ $book->title }} cover" class="object-cover h-full w-full">
+                                                    @else
+                                                        <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }} cover" class="object-cover h-full w-full">
+                                                    @endif
+                                                @else
+                                                    <span class="text-yellow-600 font-semibold text-lg">{{ substr($book->title, 0, 1) }}</span>
+                                                @endif
                                             </div>
                                         </div>
                                         <div>
@@ -177,7 +187,7 @@
                                         </div>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-sm font-medium text-gray-900">{{ $book->total_loans ?? 0 }} loans</p>
+                                        <p class="text-sm font-medium text-gray-900">{{ $book->loans_count ?? 0 }} loans</p>
                                         <p class="text-xs text-gray-500">{{ $book->category }}</p>
                                     </div>
                                 </div>
