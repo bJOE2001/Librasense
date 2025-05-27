@@ -308,7 +308,7 @@
                 datasets: [{
                     data: {!! json_encode($sentimentStats->pluck('count')) !!},
                     backgroundColor: [
-                        '#10B981', '#F59E0B', '#EF4444'
+                        '#EF4444', '#10B981', '#F59E0B'
                     ]
                 }]
             },
