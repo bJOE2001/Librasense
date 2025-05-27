@@ -11,6 +11,7 @@ use App\Models\Feedback;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AnalyticsController extends Controller
 {
@@ -253,5 +254,112 @@ class AnalyticsController extends Controller
         return view('admin.analytics.library-inout-tracking', compact(
             'hours', 'data1', 'data2', 'date1', 'date2'
         ));
+    }
+
+    public function exportUsers()
+    {
+        $users = \App\Models\User::where('email', '!=', 'admin@librasense.com')->get();
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="users.csv"',
+        ];
+        $columns = ['ID', 'Name', 'Email', 'School', 'Created At'];
+        $callback = function() use ($users, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($users as $user) {
+                fputcsv($file, [
+                    $user->id,
+                    $user->name,
+                    $user->email,
+                    $user->school,
+                    $user->created_at,
+                ]);
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportVisitors()
+    {
+        $visits = \App\Models\LibraryVisit::with('user')->get();
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="visitors.csv"',
+        ];
+        $columns = ['Visit ID', 'User Name', 'User Email', 'Entry Time', 'Exit Time'];
+        $callback = function() use ($visits, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($visits as $visit) {
+                if ($visit->user && $visit->user->email === 'admin@librasense.com') continue;
+                fputcsv($file, [
+                    $visit->id,
+                    $visit->user ? $visit->user->name : 'Unknown',
+                    $visit->user ? $visit->user->email : 'Unknown',
+                    $visit->entry_time,
+                    $visit->exit_time,
+                ]);
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportCirculation()
+    {
+        $loans = \App\Models\Loan::with('user', 'book')->get();
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="circulation.csv"',
+        ];
+        $columns = ['Loan ID', 'Book Title', 'User Name', 'User Email', 'Loan Date', 'Return Date', 'Status'];
+        $callback = function() use ($loans, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($loans as $loan) {
+                if ($loan->user && $loan->user->email === 'admin@librasense.com') continue;
+                fputcsv($file, [
+                    $loan->id,
+                    $loan->book ? $loan->book->title : 'Unknown',
+                    $loan->user ? $loan->user->name : 'Unknown',
+                    $loan->user ? $loan->user->email : 'Unknown',
+                    $loan->loan_date,
+                    $loan->return_date,
+                    $loan->status,
+                ]);
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportInOut()
+    {
+        $visits = \App\Models\LibraryVisit::with('user')->get();
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="inout_tracking.csv"',
+        ];
+        $columns = ['Visit ID', 'User Name', 'User Email', 'Entry Time', 'Exit Time', 'Duration (minutes)'];
+        $callback = function() use ($visits, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($visits as $visit) {
+                if ($visit->user && $visit->user->email === 'admin@librasense.com') continue;
+                $duration = $visit->exit_time && $visit->entry_time ? $visit->entry_time->diffInMinutes($visit->exit_time) : null;
+                fputcsv($file, [
+                    $visit->id,
+                    $visit->user ? $visit->user->name : 'Unknown',
+                    $visit->user ? $visit->user->email : 'Unknown',
+                    $visit->entry_time,
+                    $visit->exit_time,
+                    $duration,
+                ]);
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
     }
 } 

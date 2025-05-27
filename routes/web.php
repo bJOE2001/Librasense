@@ -88,4 +88,8 @@ Route::prefix('admin/analytics')->name('admin.analytics.')->group(function () {
     Route::get('/export-reports', function() {
         return view('admin.analytics.export-reports');
     })->name('export-reports');
+    Route::get('/export-users', [\App\Http\Controllers\Admin\AnalyticsController::class, 'exportUsers'])->name('export-users');
+    Route::get('/export-visitors', [\App\Http\Controllers\Admin\AnalyticsController::class, 'exportVisitors'])->name('export-visitors');
+    Route::get('/export-circulation', [\App\Http\Controllers\Admin\AnalyticsController::class, 'exportCirculation'])->name('export-circulation');
+    Route::get('/export-inout', [\App\Http\Controllers\Admin\AnalyticsController::class, 'exportInOut'])->name('export-inout');
 });
