@@ -100,28 +100,32 @@
                 </div>
             </div>
 
-            <!-- Latest Feedback and Suggestions -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Latest Feedback -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                        </svg>
-                        Latest Feedback
-                    </h3>
-                    <div class="space-y-4">
+            <!-- 2x2 Grid for Four Aligned Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Card 1: Latest Feedback -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col min-h-[400px] hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <div class="p-2 bg-yellow-50 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                </svg>
+                            </div>
+                            Latest Feedback
+                        </h3>
+                        <span class="text-sm text-gray-500">Last 7 days</span>
+                    </div>
+                    <div class="space-y-3 overflow-y-auto max-h-[320px] pr-2">
                         @foreach($latestFeedback as $feedback)
                             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
                                         <span class="text-sm font-medium text-yellow-600">{{ $feedback->user && $feedback->user->name ? substr($feedback->user->name, 0, 1) : '?' }}</span>
                                     </div>
-                                    <span class="font-medium text-gray-800">{{ $feedback->user->name ?? 'Anonymous' }}</span>
-                                </div>
-                                <div class="flex-1 mx-4">
-                                    <div class="font-medium text-gray-900">{{ $feedback->subject }}</div>
-                                    <div class="text-gray-600 text-sm">{{ Str::limit($feedback->message, 60) }}</div>
+                                    <div>
+                                        <span class="font-medium text-gray-800">{{ $feedback->user->name ?? 'Anonymous' }}</span>
+                                        <div class="text-sm text-gray-600">{{ Str::limit($feedback->subject, 40) }}</div>
+                                    </div>
                                 </div>
                                 <div class="flex flex-col items-end">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $feedback->rating >= 4 ? 'bg-green-100 text-green-800' : ($feedback->rating <= 2 ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
@@ -136,70 +140,120 @@
                         @endforeach
                     </div>
                 </div>
-                <!-- Suggestions Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-1.79 8-4V6c0-2.21-3.582-4-8-4S4 3.79 4 6v10c0 2.21 3.582 4 8 4z" />
-                        </svg>
-                        Suggestions
-                    </h3>
 
-                    {{-- Actionable Suggestions --}}
-                    <div class="mb-6">
-                        <div class="font-semibold text-blue-700 flex items-center mb-2">
-                            <svg class="w-4 h-4 mr-1 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                <!-- Card 2: Actionable Suggestions -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col min-h-[400px] hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <div class="p-2 bg-blue-50 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
                             Actionable Suggestions
-                        </div>
-                        <div style="max-height: 200px; overflow-y: auto;" class="pr-2">
-                            <ul class="space-y-2">
-                                @foreach($suggestions as $suggestion)
-                                    @if($suggestion['text'] !== 'Emerging issue')
-                                        <li class="flex flex-col bg-blue-50 rounded p-2">
-                                            <div class="flex items-center">
-                                                <span class="font-medium">{{ $suggestion['text'] }}</span>
-                                                @if(!is_null($suggestion['count']))
-                                                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                                                        {{ $suggestion['count'] }} feedback{{ $suggestion['count'] > 1 ? 's' : '' }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                            @if(!empty($suggestion['phrase']))
-                                                <span class="ml-1 mt-1 text-xs text-gray-500 italic">Most common phrase: "{{ $suggestion['phrase'] }}"</span>
-                                            @endif
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
+                        </h3>
+                        <span class="text-sm text-gray-500">Based on feedback</span>
                     </div>
-
-                    {{-- Emerging Issues --}}
-                    <div>
-                        <div class="font-semibold text-orange-700 flex items-center mb-2">
-                            <svg class="w-4 h-4 mr-1 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01" />
-                            </svg>
-                            Emerging Issues
-                        </div>
-                        <div style="max-height: 250px; overflow-y: auto;" class="pr-2">
-                            <ul class="space-y-2">
-                                @foreach($suggestions as $suggestion)
-                                    @if($suggestion['text'] === 'Emerging issue')
-                                        <li class="flex flex-col bg-orange-50 rounded p-2">
-                                            <div class="flex items-center">
-                                                <span class="font-medium">Phrase: <span class="text-orange-700">"{{ $suggestion['phrase'] }}"</span></span>
-                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-800">
+                    <div class="overflow-y-auto max-h-[320px] pr-2">
+                        <ul class="space-y-3">
+                            @foreach($suggestions as $suggestion)
+                                @if($suggestion['text'] !== 'Emerging issue' && $suggestion['text'] !== 'Most Requested Books')
+                                    <li class="flex flex-col bg-blue-50 rounded-lg p-4 hover:bg-blue-100 transition-colors duration-200">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-medium text-blue-900">{{ $suggestion['text'] }}</span>
+                                            @if(!is_null($suggestion['count']))
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
                                                     {{ $suggestion['count'] }} feedback{{ $suggestion['count'] > 1 ? 's' : '' }}
                                                 </span>
+                                            @endif
+                                        </div>
+                                        @if(!empty($suggestion['phrase']))
+                                            <div class="mt-2 flex items-center text-sm text-blue-700">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                Most common phrase: "{{ $suggestion['phrase'] }}"
                                             </div>
+                                        @endif
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Card 3: Most Requested Books -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col min-h-[400px] hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <div class="p-2 bg-green-50 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                            </div>
+                            Most Requested Books
+                        </h3>
+                        <span class="text-sm text-gray-500">Popular requests</span>
+                    </div>
+                    <div class="overflow-y-auto max-h-[320px] pr-2">
+                        @foreach($suggestions as $suggestion)
+                            @if($suggestion['text'] === 'Most Requested Books' && !empty($suggestion['books']))
+                                <ul class="space-y-3">
+                                    @foreach($suggestion['books'] as $bookTitle => $count)
+                                        <li class="flex items-center justify-between bg-green-50 rounded-lg p-4 hover:bg-green-100 transition-colors duration-200">
+                                            <div class="flex items-center">
+                                                <svg class="w-5 h-5 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                                </svg>
+                                                <span class="font-medium text-green-900">{{ $bookTitle }}</span>
+                                            </div>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                {{ $count }} request{{ $count > 1 ? 's' : '' }}
+                                            </span>
                                         </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Card 4: Emerging Issues -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col min-h-[400px] hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                            <div class="p-2 bg-orange-50 rounded-lg mr-3">
+                                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            Emerging Issues
+                        </h3>
+                        <span class="text-sm text-gray-500">Requires attention</span>
+                    </div>
+                    <div class="overflow-y-auto max-h-[320px] pr-2">
+                        <ul class="space-y-3">
+                            @foreach($suggestions as $suggestion)
+                                @if($suggestion['text'] === 'Emerging issue')
+                                    <li class="flex flex-col bg-orange-50 rounded-lg p-4 hover:bg-orange-100 transition-colors duration-200">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <svg class="w-5 h-5 mr-3 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                                <span class="font-medium text-orange-900">Issue Detected</span>
+                                            </div>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-800">
+                                                {{ $suggestion['count'] }} feedback{{ $suggestion['count'] > 1 ? 's' : '' }}
+                                            </span>
+                                        </div>
+                                        <div class="mt-2 text-sm text-orange-700">
+                                            <span class="font-medium">Common phrase:</span> "{{ $suggestion['phrase'] }}"
+                                        </div>
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
             </div>

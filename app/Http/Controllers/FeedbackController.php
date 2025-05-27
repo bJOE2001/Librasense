@@ -81,6 +81,12 @@ class FeedbackController extends Controller
         $anomalyStats = Feedback::getAnomalyStats();
         $userSegmentStats = Feedback::getUserSegmentStats();
         
+        // Use weekly feedback (past 7 days) instead of just latest feedback
+        $weeklyFeedback = Feedback::with('user')
+            ->where('created_at', '>=', now()->subDays(7))
+            ->orderByDesc('created_at')
+            ->get();
+
         $latestFeedback = Feedback::with('user')
             ->latest()
             ->take(5)
@@ -94,14 +100,13 @@ class FeedbackController extends Controller
             'anomaly_count' => Feedback::where('is_anomaly', true)->count(),
         ];
 
-        // Combine clustering (by topic) and phrase extraction (frequent patterns)
-        $suggestions = [];
+        // Use $weeklyFeedback for all suggestion logic
+        $recentNegativeFeedback = $weeklyFeedback->filter(function($feedback) {
+            return ($feedback->sentiment ?? null) === 'negative' || $feedback->rating <= 2;
+        });
         $topicCounts = [];
         $topicFeedbackMap = [];
         $miningService = app(\App\Services\FeedbackMiningService::class);
-        $recentNegativeFeedback = $latestFeedback->filter(function($feedback) {
-            return ($feedback->sentiment ?? null) === 'negative' || $feedback->rating <= 2;
-        });
         foreach ($recentNegativeFeedback as $feedback) {
             $topics = is_array($feedback->topics) ? $feedback->topics : json_decode($feedback->topics, true);
             if ($topics) {
@@ -131,6 +136,7 @@ class FeedbackController extends Controller
         ];
         arsort($topicCounts);
         // For each top topic, extract most common phrase (if any)
+        $suggestions = [];
         foreach ($topicCounts as $topic => $count) {
             $suggestionText = $topicToSuggestion[$topic] ?? ('Review feedback related to ' . $topic);
             $clusterFeedback = collect($topicFeedbackMap[$topic] ?? []);
@@ -145,12 +151,39 @@ class FeedbackController extends Controller
                 'phrase' => $topPhrase
             ];
         }
-        // Also extract overall frequent patterns as emerging issues
-        $allNegativeFeedback = \App\Models\Feedback::where('sentiment', 'negative')
-            ->orWhere('rating', '<=', 2)
-            ->latest()
-            ->take(20)
-            ->get();
+        // Book request extraction
+        $bookRequests = [];
+        $trailingGenericPattern = '/\b(for|in|to|the|library|collection|section|by|author|please|add|request|include|get)\b.*$/i';
+        foreach ($weeklyFeedback as $feedback) {
+            if (preg_match_all('/(?:add|request|include|get)\s+["\']?([A-Za-z0-9:;,.\'\- ]{2,})["\']?/i', $feedback->message, $matches)) {
+                foreach ($matches[1] as $bookTitle) {
+                    $bookTitle = preg_replace($trailingGenericPattern, '', $bookTitle);
+                    $bookTitle = trim($bookTitle);
+                    // Filter out generic words/phrases
+                    if (
+                        strlen($bookTitle) > 2 &&
+                        !preg_match('/book|books|collection|title|author|section|more|new|old|copy|copies|for|library|please|add|request|include|get/i', $bookTitle) &&
+                        !in_array(strtolower($bookTitle), ['for', 'the', 'library', 'collection', 'section', 'by', 'author', 'please', 'add', 'request', 'include', 'get'])
+                    ) {
+                        $bookRequests[$bookTitle] = ($bookRequests[$bookTitle] ?? 0) + 1;
+                    }
+                }
+            }
+        }
+        arsort($bookRequests);
+        $topBookRequests = array_slice($bookRequests, 0, 5, true);
+        if (!empty($topBookRequests)) {
+            $suggestions[] = [
+                'text' => 'Most Requested Books',
+                'count' => null,
+                'phrase' => null,
+                'books' => $topBookRequests
+            ];
+        }
+        // For emerging issues, use $weeklyFeedback as well
+        $allNegativeFeedback = $weeklyFeedback->filter(function($feedback) {
+            return ($feedback->sentiment ?? null) === 'negative' || $feedback->rating <= 2;
+        });
         $frequentPatterns = $miningService->findFrequentPatterns($allNegativeFeedback);
         foreach ($frequentPatterns as $phrase => $count) {
             if ($count > 1) {

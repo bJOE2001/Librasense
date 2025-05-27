@@ -82,7 +82,22 @@ class DummyFeedbackSeeder extends Seeder
             'The parking area needs better lighting in the evening.',
             'The book reservation system works smoothly.',
             'The library website could be more user-friendly.',
-            'The staff is always friendly and professional.'
+            'The staff is always friendly and professional.',
+            'Please add "Atomic Habits" by James Clear to the library collection.',
+            'I would like to request "The Pragmatic Programmer" for the library.',
+            'Can you get "Clean Code" by Robert C. Martin?',
+            'Please add "Deep Work" by Cal Newport.',
+            'Requesting "Thinking, Fast and Slow" by Daniel Kahneman.',
+            'Can you get "Zero to One" by Peter Thiel?',
+            'Please include "Educated" by Tara Westover in the collection.',
+            'I would love to see "Sapiens" by Yuval Noah Harari in the library.',
+            'Request for "The Lean Startup" by Eric Ries.',
+            'Please add more books on data science and machine learning.',
+            'Can you get more recent technology books?',
+            'Would love to have more books on entrepreneurship.',
+            'Please add more comfortable chairs in the study area.',
+            'The WiFi speed is much better now, thank you!',
+            'The new computers in the tech section are great.'
         ];
 
         // Negative messages
@@ -101,7 +116,22 @@ class DummyFeedbackSeeder extends Seeder
             'The parking situation is a nightmare. There are never enough spaces and it\'s too expensive. The staff is unhelpful with parking issues.',
             'The book return process is complicated and the staff is not helpful when issues arise. This is frustrating and time-consuming.',
             'The digital resources are limited and many links are broken or outdated. This makes it difficult to access necessary materials.',
-            'The library environment is not conducive to studying. It\'s too hot, the chairs are uncomfortable, and the noise level is unacceptable.'
+            'The library environment is not conducive to studying. It\'s too hot, the chairs are uncomfortable, and the noise level is unacceptable.',
+            'The staff at the help desk are always unhelpful and sometimes even rude.',
+            'The library needs to update its technology. The computers are slow and outdated.',
+            'The WiFi is unreliable and disconnects frequently.',
+            'There are not enough power outlets for students.',
+            'The library website is very confusing and hard to navigate.',
+            'The study rooms are always booked and never available when needed.',
+            'The air conditioning is either too cold or not working at all.',
+            'The library is often dirty and the restrooms are not well maintained.',
+            'The staff ignores requests for new books.',
+            'The noise level in the group study area is always too high.',
+            'The chairs in the reading area are very uncomfortable.',
+            'The library closes too early on weekends.',
+            'The event announcements are not clear or visible.',
+            'The library should have more events and workshops.',
+            'The book reservation system is unreliable and often fails.'
         ];
 
         // Generate feedback for each user
