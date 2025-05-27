@@ -45,7 +45,7 @@
                 <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-all duration-200 transform hover:-translate-y-1">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">User Engagement</p>
+                            <p class="text-sm font-medium text-gray-600">Total Users</p>
                             <p class="text-3xl font-bold text-purple-600 mt-2">{{ $stats['total_users'] }}</p>
                             <p class="text-sm text-gray-500 mt-1">Feedback: {{ $stats['total_feedback'] }}</p>
                         </div>
@@ -77,8 +77,16 @@
                                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                     <div class="flex items-center space-x-4">
                                         <div class="flex-shrink-0">
-                                            <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                                                <span class="text-primary-600 font-semibold">{{ $loan->user ? substr($loan->user->name, 0, 1) : '?' }}</span>
+                                            <div class="w-10 aspect-[2/3] rounded bg-primary-100 flex items-center justify-center overflow-hidden">
+                                                @if(isset($loan->book->cover_image) && $loan->book->cover_image)
+                                                    @if(Str::startsWith($loan->book->cover_image, ['http://', 'https://']))
+                                                        <img src="{{ $loan->book->cover_image }}" alt="{{ $loan->book->title }} cover" class="object-cover h-full w-full">
+                                                    @else
+                                                        <img src="{{ asset('storage/' . $loan->book->cover_image) }}" alt="{{ $loan->book->title }} cover" class="object-cover h-full w-full">
+                                                    @endif
+                                                @else
+                                                    <span class="text-primary-600 font-semibold text-lg">{{ substr($loan->book->title, 0, 1) }}</span>
+                                                @endif
                                             </div>
                                         </div>
                                         <div>

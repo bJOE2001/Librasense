@@ -38,16 +38,18 @@ class AnalyticsController extends Controller
 
         // Get user statistics - using created_at instead of last_login_at
         $userStats = [
-            'active_users' => User::where(function($query) {
-                $query->where('created_at', '>=', Carbon::now()->subDays(30))
-                    ->orWhereHas('loans', function($q) {
-                        $q->where('created_at', '>=', Carbon::now()->subDays(30));
-                    })
-                    ->orWhereHas('libraryVisits', function($q) {
-                        $q->where('created_at', '>=', Carbon::now()->subDays(30));
-                    });
-            })->count(),
-            'new_users' => User::whereMonth('created_at', Carbon::now()->month)->count(),
+            'active_users' => User::where('email', '!=', 'admin@librasense.com')
+                ->where(function($query) {
+                    $query->where('created_at', '>=', Carbon::now()->subDays(30))
+                        ->orWhereHas('loans', function($q) {
+                            $q->where('created_at', '>=', Carbon::now()->subDays(30));
+                        })
+                        ->orWhereHas('libraryVisits', function($q) {
+                            $q->where('created_at', '>=', Carbon::now()->subDays(30));
+                        });
+                })->count(),
+            'new_users' => User::where('email', '!=', 'admin@librasense.com')
+                ->whereMonth('created_at', Carbon::now()->month)->count(),
             'active_loans' => Loan::whereNull('return_date')->count(),
             'recent_visits' => LibraryVisit::where('created_at', '>=', Carbon::now()->subDays(30))->count(),
         ];

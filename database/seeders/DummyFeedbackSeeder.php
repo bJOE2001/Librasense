@@ -153,8 +153,8 @@ class DummyFeedbackSeeder extends Seeder
                     $rating = rand(3, 5); // Higher rating for positive feedback
                 }
                 
-                // Create feedback with random date within last 30 days
-                $createdAt = Carbon::now()->subDays(rand(0, 30))->subHours(rand(0, 23))->subMinutes(rand(0, 59));
+                // Create feedback with random date within last 7 days
+                $createdAt = Carbon::now()->subDays(rand(0, 7))->subHours(rand(0, 23))->subMinutes(rand(0, 59));
                 
                 $feedback = Feedback::create([
                     'user_id' => $user->id,
